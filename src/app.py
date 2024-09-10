@@ -1,10 +1,13 @@
 import customtkinter as ctk
+from config.exceptions import NoInternetException
 from config.gui_config import *
 
 from gui.request_part import RequestPart
 from gui.table_part import TablePart
 from gui.save_path_part import SavePathPart
 from gui.basic.button import CustomButton
+
+from get_data.parse_json import parseNewsData
 
 try:
     from ctypes import windll, byref, sizeof, c_int
@@ -30,9 +33,14 @@ class App(ctk.CTk):
         self.rowconfigure(1, weight=2, uniform="a")
         self.rowconfigure(2, weight=1, uniform="a")
         self.rowconfigure(3, weight=1, uniform="a")
+        # variables
+
+        self.request_info = ctk.StringVar(value=". . .")
 
         # widgets
-        self.request_part = RequestPart(self)
+        self.request_part = RequestPart(
+            self, btn_command=self.get_news_data, variable=self.request_info
+        )
         self.table_part = TablePart(self)
         self.save_path_part = SavePathPart(self)
 
@@ -58,6 +66,23 @@ class App(ctk.CTk):
         self.after_cancel(self.table_part)
         self.after_cancel(self.save_path_part)
         self.destroy()
+
+    def get_news_data(self):
+        try:
+            news_data = parseNewsData()
+            self.request_info.set(self.get_total_results(news_data))
+        except Exception as e:
+            if isinstance(e, NoInternetException):
+                self.request_info.set("Нет подключения к Интернету!")
+
+
+
+    def get_total_results(self, data):
+        total_results = sum(len(v) for v in data.values())
+        if total_results <= 0:
+            return f"Получено {total_results} новостных карточек. Что-то пошло не так"
+        else:
+            return f"Получено {total_results} новостных карточек"
 
 
 App()
