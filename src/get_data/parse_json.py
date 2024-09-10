@@ -20,10 +20,10 @@ def parseNewsData():
     for dict in list_of_dicts:
         for card in dict["index"]:
             dt_object = create_dt_object(card.get("date"))
-            year_month = (dt_object.year, dt_object.month)
+            key = f"{dt_object.month}.{dt_object.year}"
             russian_date = dt_object.strftime("%d %B %Y")
             title = card.get("description")
-            cards_by_month_list[str(year_month)].append(
+            cards_by_month_list[str(key)].append(
                 {
                     "Timestamp": dt_object.timestamp(),
                     "Date_title": russian_date,

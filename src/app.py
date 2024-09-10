@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from config.exceptions import NoInternetException
 from config.gui_config import *
+import datetime
 
 from gui.request_part import RequestPart
 from gui.table_part import TablePart
@@ -33,9 +34,14 @@ class App(ctk.CTk):
         self.rowconfigure(1, weight=2, uniform="a")
         self.rowconfigure(2, weight=1, uniform="a")
         self.rowconfigure(3, weight=1, uniform="a")
-        # variables
+
+        # ctk variables
 
         self.request_info = ctk.StringVar(value=". . .")
+
+        # data
+        self.news_data = None
+        self.table_data = []
 
         # widgets
         self.request_part = RequestPart(
@@ -69,13 +75,25 @@ class App(ctk.CTk):
 
     def get_news_data(self):
         try:
-            news_data = parseNewsData()
-            self.request_info.set(self.get_total_results(news_data))
+            self.news_data = parseNewsData()
+            self.request_info.set(self.get_total_results(self.news_data))
+            self.fill_table()
         except Exception as e:
             if isinstance(e, NoInternetException):
                 self.request_info.set("Нет подключения к Интернету!")
+            else:
+                print(e)
 
+    def fill_table(self):
+        for k in self.news_data.keys():
+            tmp = {}
+            tmp["ru_date"] = self.parse_datestring(k).strftime("%B %Y")
+            tmp["numeric_date"] = k
+            tmp["count"] = len(self.news_data[k])
+            tmp["to_save"] = False
+            self.table_data.append(tmp)
 
+            self.table_part.add_row(tmp)
 
     def get_total_results(self, data):
         total_results = sum(len(v) for v in data.values())
@@ -83,6 +101,9 @@ class App(ctk.CTk):
             return f"Получено {total_results} новостных карточек. Что-то пошло не так"
         else:
             return f"Получено {total_results} новостных карточек"
+
+    def parse_datestring(self, string):
+        return datetime.datetime.strptime(string, "%m.%Y")
 
 
 App()
