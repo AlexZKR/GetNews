@@ -1,12 +1,7 @@
 import requests
 
-from gui.scraper_config import (
-    NoInternetException,
-    post_headers,
-    PAGE_SIZE,
-    FIRST_REQUEST,
-    REQUEST_SIZE,
-)
+from config.request_config import *
+from config.exceptions import NoInternetException
 
 
 def getAllJsonNewsData() -> list:
