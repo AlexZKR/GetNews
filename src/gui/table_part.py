@@ -3,7 +3,7 @@ import customtkinter as ctk
 
 from .basic.table_header_lbl import TableHeaderLbl
 from .basic.main_txt_label import MainTxtLbl
-from gui_settings import *
+from config.gui_config import *
 
 
 class TablePart(ctk.CTkFrame):

@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from gui_settings import *
+from config.gui_config import *
 
 from .basic.button import CustomButton
 from .basic.main_txt_label import MainTxtLbl

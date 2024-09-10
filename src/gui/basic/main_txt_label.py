@@ -1,8 +1,8 @@
 import customtkinter as ctk
-from gui_settings import *
+from config.gui_config import *
 
 
-class SavePathLbl(ctk.CTkLabel):
+class MainTxtLbl(ctk.CTkLabel):
 
     def __init__(
         self,
@@ -14,7 +14,7 @@ class SavePathLbl(ctk.CTkLabel):
         super().__init__(
             master=parent,
             text=lbl_text,
-            font=ctk.CTkFont(family=FONT, size=SAVE_PATH_FONT_SIZE),
+            font=ctk.CTkFont(family=FONT, size=INPUT_FONT_SIZE),
             text_color=BLACK,
             padx=pad_x,
             pady=pad_y,

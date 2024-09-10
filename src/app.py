@@ -1,10 +1,10 @@
 import customtkinter as ctk
-from gui_settings import *
+from config.gui_config import *
 
-from widgets.request_part import RequestPart
-from widgets.table_part import TablePart
-from widgets.save_path_part import SavePathPart
-from widgets.basic.button import CustomButton
+from gui.request_part import RequestPart
+from gui.table_part import TablePart
+from gui.save_path_part import SavePathPart
+from gui.basic.button import CustomButton
 
 try:
     from ctypes import windll, byref, sizeof, c_int

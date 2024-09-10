@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from gui_settings import *
+from config.gui_config import *
 
 
 class TableHeaderLbl(ctk.CTkLabel):
