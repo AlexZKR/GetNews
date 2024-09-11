@@ -1,17 +1,17 @@
 import customtkinter as ctk
-from config.exceptions import NoInternetException
-from config.gui_config import *
+from src.config.exceptions import NoInternetException, SavePathDoesNotExistException
+from src.config.gui_config import *
 from customtkinter import filedialog
 import datetime
 
-from gui.request_part import RequestPart
-from gui.table_part import TablePart
-from gui.save_path_part import SavePathPart
-from gui.basic.button import CustomButton
+from src.gui.request_part import RequestPart
+from src.gui.table_part import TablePart
+from src.gui.save_path_part import SavePathPart
+from src.gui.basic.button import CustomButton
 
 
-from output_data.scraper_output import output_results
-from get_data.parse_json import parseNewsData
+from src.output_data.scraper_output import output_results
+from src.get_data.parse_json import parseNewsData
 
 try:
     from ctypes import windll, byref, sizeof, c_int
@@ -40,8 +40,9 @@ class App(ctk.CTk):
 
         # ctk variables
 
-        self.request_info = ctk.StringVar(value=". . .")
+        self.message_label = ctk.StringVar(value=". . .")
         self.save_path = ctk.StringVar(value="Путь для сохранения не выбран")
+        self.add_save_folder = ctk.BooleanVar(value=True)
 
         # data
         self.news_data = None
@@ -49,10 +50,12 @@ class App(ctk.CTk):
 
         # widgets
         self.request_part = RequestPart(
-            self, btn_command=self.get_news_data, variable=self.request_info
+            self, btn_command=self.get_news_data, variable=self.message_label
         )
         self.table_part = TablePart(self)
-        self.save_path_part = SavePathPart(self, self.save_path, self.get_save_path)
+        self.save_path_part = SavePathPart(
+            self, self.save_path, self.get_save_path, self.add_save_folder
+        )
 
         self.save_btn_part = CustomButton(
             self, btn_text="Сохранить", btn_command=self.on_save
@@ -86,11 +89,11 @@ class App(ctk.CTk):
     def get_news_data(self):
         try:
             self.news_data = parseNewsData()
-            self.request_info.set(self.get_total_results(self.news_data))
+            self.message_label.set(self.get_total_results(self.news_data))
             self.fill_table()
         except Exception as e:
             if isinstance(e, NoInternetException):
-                self.request_info.set("Нет подключения к Интернету!")
+                self.message_label.set("Нет подключения к Интернету!")
             else:
                 print(e)
 
@@ -121,7 +124,13 @@ class App(ctk.CTk):
             if item["to_save"] == True:
                 output.append(self.news_data.get(item["numeric_date"]))
         if len(output) > 0:
-            output_results(output, self.save_path)
+            try:
+                output_results(output, self.save_path, self.add_save_folder)
+            except Exception as e:
+                if isinstance(e, SavePathDoesNotExistException):
+                    self.message_label.set("Путь для сохранения не существует!")
+                else:
+                    self.message_label.set(e)
 
 
 App()

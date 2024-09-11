@@ -1,7 +1,7 @@
 import requests
 
-from config.request_config import *
-from config.exceptions import NoInternetException
+from src.config.request_config import *
+from src.config.exceptions import NoInternetException
 
 
 def getAllJsonNewsData() -> list:

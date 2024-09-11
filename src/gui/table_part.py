@@ -4,7 +4,7 @@ import customtkinter as ctk
 from .basic.table_header_lbl import TableHeaderLbl
 from .basic.table_row import TableRow
 
-from config.gui_config import *
+from src.config.gui_config import *
 
 
 class TablePart(ctk.CTkFrame):
@@ -37,10 +37,7 @@ class TablePart(ctk.CTkFrame):
         self.rows = []
         self.row_count = 0
 
-        
-
         self.grid(column=0, row=1, sticky="nsew", padx=15)
-
 
     def add_row(self, data: dict):
         self.row_count += 1

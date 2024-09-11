@@ -1,6 +1,6 @@
 import customtkinter as ctk
 
-from config.gui_config import *
+from src.config.gui_config import *
 
 
 class CustomButton(ctk.CTkButton):

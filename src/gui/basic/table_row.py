@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from config.gui_config import *
+from src.config.gui_config import *
 
 from .table_row_lbl import TableRowLbl
 
