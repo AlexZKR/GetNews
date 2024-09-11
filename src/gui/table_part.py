@@ -37,7 +37,10 @@ class TablePart(ctk.CTkFrame):
         self.rows = []
         self.row_count = 0
 
+        
+
         self.grid(column=0, row=1, sticky="nsew", padx=15)
+
 
     def add_row(self, data: dict):
         self.row_count += 1

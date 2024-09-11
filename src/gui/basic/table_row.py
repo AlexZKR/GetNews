@@ -6,7 +6,7 @@ from .table_row_lbl import TableRowLbl
 
 class TableRow(ctk.CTkFrame):
     def __init__(self, parent, row_num, data):
-        super().__init__(master=parent, fg_color=DARK_GREEN)
+        super().__init__(master=parent, fg_color=DARK_GREEN, corner_radius=0)
 
         # layout
         self.rowconfigure(0, weight=1)
@@ -24,12 +24,26 @@ class TableRow(ctk.CTkFrame):
         periodLbl = TableRowLbl(self, lbl_text=data["ru_date"])
         countLbl = TableRowLbl(self, lbl_text=data["count"])
 
-        checkbox.grid(row=0, column=0, sticky="n", padx=45)
+        checkbox.grid(row=0, column=0, sticky="ns", padx=45)
         periodLbl.grid(row=0, column=1, sticky="n")
         countLbl.grid(row=0, column=2, sticky="n")
 
-        # checkbox.pack(side="left", anchor="n", expand=True)
-        # periodLbl.pack(side="left", anchor="n", expand=True)
-        # countLbl.pack(side="left", anchor="n", expand=True)
+        self.grid(column=0, row=row_num, sticky="ew", ipady=3)
 
-        self.grid(column=0, row=row_num, sticky="ew")
+        # events
+        bind_tag = f"row{row_num}_widgets"
+
+        self.retag(bind_tag, self, checkbox, periodLbl, countLbl)
+        self.bind_class(bind_tag, "<Enter>", self.on_hover)
+        self.bind_class(bind_tag, "<Leave>", self.on_leave)
+
+    def retag(self, tag, *args):
+        """Add the given tag as the first bindtag for every widget passed in"""
+        for widget in args:
+            widget.bindtags((tag,) + widget.bindtags())
+
+    def on_leave(self, *args):
+        self.configure(fg_color=DARK_GREEN)
+
+    def on_hover(self, *args):
+        self.configure(fg_color=GRAY)
