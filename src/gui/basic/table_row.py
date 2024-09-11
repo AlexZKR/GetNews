@@ -7,7 +7,7 @@ from .table_row_lbl import TableRowLbl
 class TableRow(ctk.CTkFrame):
     def __init__(self, parent, row_num, data):
         super().__init__(master=parent, fg_color=DARK_GREEN, corner_radius=0)
-
+        self.data = data
         # layout
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1, uniform="a")
@@ -20,9 +20,10 @@ class TableRow(ctk.CTkFrame):
             text="",
             border_color=TABLE_HEADER_ROW,
             hover_color=GREEN,
+            command=self.on_checked,
         )
-        periodLbl = TableRowLbl(self, lbl_text=data["ru_date"])
-        countLbl = TableRowLbl(self, lbl_text=data["count"])
+        periodLbl = TableRowLbl(self, lbl_text=self.data["ru_date"])
+        countLbl = TableRowLbl(self, lbl_text=self.data["count"])
 
         checkbox.grid(row=0, column=0, sticky="ns", padx=45)
         periodLbl.grid(row=0, column=1, sticky="n")
@@ -32,7 +33,6 @@ class TableRow(ctk.CTkFrame):
 
         # events
         bind_tag = f"row{row_num}_widgets"
-
         self.retag(bind_tag, self, checkbox, periodLbl, countLbl)
         self.bind_class(bind_tag, "<Enter>", self.on_hover)
         self.bind_class(bind_tag, "<Leave>", self.on_leave)
@@ -47,3 +47,9 @@ class TableRow(ctk.CTkFrame):
 
     def on_hover(self, *args):
         self.configure(fg_color=GRAY)
+
+    def on_checked(self):
+        if self.data["to_save"] == False:
+            self.data["to_save"] = True
+        else:
+            self.data["to_save"] = False

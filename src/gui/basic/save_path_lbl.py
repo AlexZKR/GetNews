@@ -8,6 +8,7 @@ class SavePathLbl(ctk.CTkLabel):
         self,
         parent,
         lbl_text,
+        variable,
         pad_x=0,
         pad_y=0,
     ):
@@ -18,4 +19,5 @@ class SavePathLbl(ctk.CTkLabel):
             text_color=BLACK,
             padx=pad_x,
             pady=pad_y,
+            textvariable=variable,
         )

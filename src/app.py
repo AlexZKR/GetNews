@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from config.exceptions import NoInternetException
 from config.gui_config import *
+from customtkinter import filedialog
 import datetime
 
 from gui.request_part import RequestPart
@@ -8,6 +9,8 @@ from gui.table_part import TablePart
 from gui.save_path_part import SavePathPart
 from gui.basic.button import CustomButton
 
+
+from output_data.scraper_output import output_results
 from get_data.parse_json import parseNewsData
 
 try:
@@ -38,6 +41,7 @@ class App(ctk.CTk):
         # ctk variables
 
         self.request_info = ctk.StringVar(value=". . .")
+        self.save_path = ctk.StringVar(value="Путь для сохранения не выбран")
 
         # data
         self.news_data = None
@@ -48,12 +52,18 @@ class App(ctk.CTk):
             self, btn_command=self.get_news_data, variable=self.request_info
         )
         self.table_part = TablePart(self)
-        self.save_path_part = SavePathPart(self)
+        self.save_path_part = SavePathPart(self, self.save_path, self.get_save_path)
 
-        self.save_btn_part = CustomButton(self, btn_text="Сохранить", btn_command=None)
+        self.save_btn_part = CustomButton(
+            self, btn_text="Сохранить", btn_command=self.on_save
+        )
         self.save_btn_part.grid(column=0, row=3, sticky="ew", padx=40)
 
         self.mainloop()
+
+    def get_save_path(self):
+        self.save_path.set(filedialog.askdirectory())
+        print(self.table_data)
 
     def change_title_bar_color(self):
         try:
@@ -104,6 +114,14 @@ class App(ctk.CTk):
 
     def parse_datestring(self, string):
         return datetime.datetime.strptime(string, "%m.%Y")
+
+    def on_save(self):
+        output = []
+        for item in self.table_data:
+            if item["to_save"] == True:
+                output.append(self.news_data.get(item["numeric_date"]))
+        if len(output) > 0:
+            output_results(output, self.save_path)
 
 
 App()
