@@ -9,7 +9,8 @@ class CustomButton(ctk.CTkButton):
         parent,
         btn_text,
         btn_command,
-        font_size = INPUT_FONT_SIZE,
+        state="normal",
+        font_size=INPUT_FONT_SIZE,
     ):
         super().__init__(
             master=parent,
@@ -20,4 +21,5 @@ class CustomButton(ctk.CTkButton):
             fg_color=LIGHT_GRAY,
             hover_color=GRAY,
             corner_radius=BUTTON_CORNER_RADIUS,
+            state=state,
         )

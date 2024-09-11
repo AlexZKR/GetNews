@@ -58,7 +58,7 @@ class App(ctk.CTk):
         )
 
         self.save_btn_part = CustomButton(
-            self, btn_text="Сохранить", btn_command=self.on_save
+            self, btn_text="Сохранить", btn_command=self.on_save, state="disabled"
         )
         self.save_btn_part.grid(column=0, row=3, sticky="ew", padx=40)
 
@@ -66,7 +66,7 @@ class App(ctk.CTk):
 
     def get_save_path(self):
         self.save_path.set(filedialog.askdirectory())
-        print(self.table_data)
+        self.enable_save_btn()
 
     def change_title_bar_color(self):
         try:
@@ -91,6 +91,7 @@ class App(ctk.CTk):
             self.news_data = parseNewsData()
             self.message_label.set(self.get_total_results(self.news_data))
             self.fill_table()
+            self.enable_save_btn()
         except Exception as e:
             if isinstance(e, NoInternetException):
                 self.message_label.set("Нет подключения к Интернету!")
@@ -117,6 +118,15 @@ class App(ctk.CTk):
 
     def parse_datestring(self, string):
         return datetime.datetime.strptime(string, "%m.%Y")
+
+    def enable_save_btn(self):
+        if self.news_data == None:
+            return
+        if (
+            len(self.news_data.items()) > 0
+            and self.save_path != "Путь для сохранения не выбран"
+        ):
+            self.save_btn_part.configure(state="normal")
 
     def on_save(self):
         output = []
