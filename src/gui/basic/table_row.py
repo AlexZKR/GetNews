@@ -29,7 +29,7 @@ class TableRow(ctk.CTkFrame):
         periodLbl.grid(row=0, column=1, sticky="n")
         countLbl.grid(row=0, column=2, sticky="n")
 
-        self.grid(column=0, row=row_num, sticky="ew", ipady=3)
+        self.grid(column=0, row=row_num, sticky="ew", ipady=4)
 
         # events
         bind_tag = f"row{row_num}_widgets"

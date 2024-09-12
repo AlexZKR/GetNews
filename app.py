@@ -2,7 +2,7 @@ import customtkinter as ctk
 from src.config.exceptions import NoInternetException, SavePathDoesNotExistException
 from src.config.gui_config import *
 from customtkinter import filedialog
-import datetime
+import datetime, os
 
 from src.gui.request_part import RequestPart
 from src.gui.table_part import TablePart
@@ -18,6 +18,8 @@ try:
 except:
     pass
 
+basedir = os.path.dirname(__file__)
+
 
 class App(ctk.CTk):
     def __init__(self):
@@ -25,8 +27,8 @@ class App(ctk.CTk):
         # window setup
         super().__init__(fg_color=GREEN)
         self.title("")
-        # self.iconbitmap()
-        self.geometry("400x400")
+        self.iconbitmap(os.path.join(basedir, (r"img\icon.ico")))
+        self.geometry("420x420")
         self.resizable(False, False)
         self.change_title_bar_color()
         self.protocol("WM_DELETE_WINDOW", self.on_closing)

@@ -29,10 +29,6 @@ class TablePart(ctk.CTkFrame):
         period_row_heading.pack(side="left", anchor="n", expand=True)
         count_row_heading.pack(side="left", anchor="n", expand=True)
 
-        # save_chck_row_heading.grid(column=0, row=0, sticky="n")
-        # period_row_heading.grid(column=1, row=0, sticky="n")
-        # count_row_heading.grid(column=2, row=0, sticky="n")
-
         # rows
         self.rows = []
         self.row_count = 0
