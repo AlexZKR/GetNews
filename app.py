@@ -66,7 +66,7 @@ class App(ctk.CTk):
 
     def get_save_path(self):
         self.save_path.set(filedialog.askdirectory())
-        self.enable_save_btn()
+        self.control_save_btn()
 
     def change_title_bar_color(self):
         try:
@@ -91,7 +91,7 @@ class App(ctk.CTk):
             self.news_data = parseNewsData()
             self.message_label.set(self.get_total_results(self.news_data))
             self.fill_table()
-            self.enable_save_btn()
+            self.control_save_btn()
         except Exception as e:
             if isinstance(e, NoInternetException):
                 self.message_label.set("Нет подключения к Интернету!")
@@ -119,12 +119,12 @@ class App(ctk.CTk):
     def parse_datestring(self, string):
         return datetime.datetime.strptime(string, "%m.%Y")
 
-    def enable_save_btn(self):
+    def control_save_btn(self):
         if self.news_data == None:
             return
-        if (
-            len(self.news_data.items()) > 0
-            and self.save_path != "Путь для сохранения не выбран"
+        if len(self.news_data.items()) > 0 and (
+            self.save_path.get() != "Путь для сохранения не выбран"
+            or self.save_path.get() != "Путь для сохранения не существует!"
         ):
             self.save_btn_part.configure(state="normal")
 
@@ -135,12 +135,14 @@ class App(ctk.CTk):
                 output.append(self.news_data.get(item["numeric_date"]))
         if len(output) > 0:
             try:
-                output_results(output, self.save_path, self.add_save_folder)
+                output_results(output, self.save_path.get(), self.add_save_folder.get())
             except Exception as e:
                 if isinstance(e, SavePathDoesNotExistException):
                     self.message_label.set("Путь для сохранения не существует!")
+                    self.control_save_btn()
                 else:
                     self.message_label.set(e)
+                    print(e)
 
 
 App()
