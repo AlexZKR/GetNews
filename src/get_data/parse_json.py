@@ -3,11 +3,16 @@ import locale
 from collections import defaultdict
 
 from .requester import getAllJsonNewsData
+from ..config.parsing_config import months_map
 
 
-def create_dt_object(date) -> dt:
-    dt_object = dt.fromtimestamp(date)
-    return dt_object
+def get_russian_txt_date(dt_object):
+    """Brings months in the correct case, i.e. "Январь - января" """
+    russian_date = dt_object.strftime("%d %B %Y").lower()
+    for nominal_case, genetive_case in months_map.items():
+        if nominal_case in russian_date:
+            proper_case = russian_date.replace(nominal_case, genetive_case)
+            return proper_case
 
 
 def parseNewsData():
@@ -19,9 +24,9 @@ def parseNewsData():
     cards_by_month_list = defaultdict(list)
     for dict in list_of_dicts:
         for card in dict["index"]:
-            dt_object = create_dt_object(card.get("date"))
+            dt_object = dt.fromtimestamp(card.get("date"))
             key = f"{dt_object.month}.{dt_object.year}"
-            russian_date = dt_object.strftime("%d %B %Y")
+            russian_date = get_russian_txt_date(dt_object)
             title = card.get("description")
             cards_by_month_list[str(key)].append(
                 {
