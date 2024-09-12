@@ -146,6 +146,7 @@ class App(ctk.CTk):
         if len(output) > 0:
             try:
                 output_results(output, self.save_path.get(), self.add_save_folder.get())
+                self.message_label.set("Готово!")
             except Exception as e:
                 if isinstance(e, SavePathDoesNotExistException):
                     self.message_label.set("Путь для сохранения не существует!")
