@@ -2,7 +2,7 @@ import customtkinter as ctk
 from src.config.exceptions import NoInternetException, SavePathDoesNotExistException
 from src.config.gui_config import *
 from customtkinter import filedialog
-import datetime, os
+import datetime, os, sys
 
 from src.gui.request_part import RequestPart
 from src.gui.table_part import TablePart
@@ -18,7 +18,14 @@ try:
 except:
     pass
 
-basedir = os.path.dirname(__file__)
+
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEI90522
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 
 class App(ctk.CTk):
@@ -27,8 +34,9 @@ class App(ctk.CTk):
         # window setup
         super().__init__(fg_color=GREEN)
         self.title("")
-        self.iconbitmap(os.path.join(basedir, (r"img\icon.ico")))
+        self.iconbitmap(resource_path("img\\icon.ico"))
         self.geometry("420x420")
+        self.title("Get News 3.0")
         self.resizable(False, False)
         self.change_title_bar_color()
         self.protocol("WM_DELETE_WINDOW", self.on_closing)
