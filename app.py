@@ -11,7 +11,7 @@ from src.gui.basic.button import CustomButton
 
 
 from src.output_data.scraper_output import output_results
-from src.get_data.parse_json import parseNewsData
+from src.get_data.parse_json import parseRawData
 
 try:
     from ctypes import windll, byref, sizeof, c_int
@@ -63,6 +63,7 @@ class App(ctk.CTk):
             self, btn_command=self.get_news_data, variable=self.message_label
         )
         self.table_part = TablePart(self)
+        
         self.save_path_part = SavePathPart(
             self, self.save_path, self.get_save_path, self.add_save_folder
         )
@@ -98,7 +99,7 @@ class App(ctk.CTk):
 
     def get_news_data(self):
         try:
-            self.news_data = parseNewsData()
+            self.news_data = parseRawData()
             self.message_label.set(self.get_total_results(self.news_data))
             self.fill_table()
             self.control_save_btn()

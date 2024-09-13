@@ -16,24 +16,38 @@ def get_russian_txt_date(dt_object):
             return proper_case
 
 
-def parseNewsData():
+def parseRawData(raw_dicts=getAllJsonNewsData()):
     """
     Parses news data in json and returns title, timestamp and date-title (ru) of a news-card
     """
-    locale.setlocale(locale.LC_TIME, "ru")
-    list_of_dicts = getAllJsonNewsData()
-    cards_by_month_list = defaultdict(list)
-    for dict in list_of_dicts:
+    parsed_dicts = []
+    for dict in raw_dicts:
         for card in dict["index"]:
             dt_object = dt.fromtimestamp(card.get("date"))
-            key = f"{dt_object.month}.{dt_object.year}"
             russian_date = get_russian_txt_date(dt_object)
             title = card.get("description")
-            cards_by_month_list[str(key)].append(
+            parsed_dicts.append(
                 {
                     "Timestamp": dt_object.timestamp(),
                     "Date_title": russian_date,
                     "Title": title,
                 }
             )
-    return cards_by_month_list
+    return parsed_dicts
+
+    # locale.setlocale(locale.LC_TIME, "ru")
+    # list_of_dicts = getAllJsonNewsData()
+    # cards_by_month_list = defaultdict(list)
+    # for dict in list_of_dicts:
+    #     for card in dict["index"]:
+    #         dt_object = dt.fromtimestamp(card.get("date"))
+    #         key = f"{dt_object.month}.{dt_object.year}"
+    #         russian_date = get_russian_txt_date(dt_object)
+    #         title = card.get("description")
+    #         cards_by_month_list[str(key)].append(
+    #             {
+    #                 "Timestamp": dt_object.timestamp(),
+    #                 "Date_title": russian_date,
+    #                 "Title": title,
+    #             }
+    #         )
