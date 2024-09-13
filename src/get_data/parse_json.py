@@ -8,6 +8,7 @@ from ..config.parsing_config import months_map
 
 def get_russian_txt_date(dt_object):
     """Brings months in the correct case, i.e. "Январь - января" """
+    locale.setlocale(locale.LC_TIME, "ru")
     russian_date = dt_object.strftime("%d %B %Y").lower()
     for nominal_case, genetive_case in months_map.items():
         if nominal_case in russian_date:
