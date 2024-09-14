@@ -1,9 +1,15 @@
 import customtkinter as ctk
 
-from src.config.exceptions import NoInternetException
+from src.config.exceptions import *
 from src.config.gui_config import *
-from src.get_data.parse_json import get_mon_ru_str, get_total_results, parseRawData, sort_by_month
+from src.get_data.parse_json import (
+    get_mon_ru_str,
+    get_total_results,
+    parseRawData,
+    sort_by_month,
+)
 from src.gui.table_part import TablePart
+from src.output_data.scraper_output import output_results
 
 # https://customtkinter.tomschimansky.com/documentation/widgets/tabview
 
@@ -17,8 +23,8 @@ class TabViewPart(ctk.CTkTabview):
         self.control_save_btn_cmd = save_btn_cmd
 
         # tabs
-        self.months_tab = self.add("Months")
-        self.period_tab = self.add("Period")
+        self.months_tab = self.add(MONTHS_TAB_NAME)
+        self.period_tab = self.add(PERIOD_TAB_NAME)
 
         # data
         self.unstructured_news_data = None
@@ -48,6 +54,7 @@ class TabViewPart(ctk.CTkTabview):
                 raise e
 
     def fill_table(self):
+
         for k in self.cards_by_months:
             tmp = {}
             tmp["ru_month"] = get_mon_ru_str(k)
@@ -57,3 +64,31 @@ class TabViewPart(ctk.CTkTabview):
             self.table_display_data.append(tmp)
 
             self.table_part.add_row(tmp)
+
+    def output_data(self) -> dict:
+        """Returns:
+        dict:
+        """
+        active_tab = self.get()
+        if active_tab == MONTHS_TAB_NAME:
+            month_chosen = self.filter_output()
+            if len(month_chosen) == 0:
+                raise NoMonthsChosenException
+            return self.get_data_to_output(month_chosen)
+        if active_tab == PERIOD_TAB_NAME:
+            self.output_period()
+
+    def get_data_to_output(self, month_chosen) -> dict:
+        output = {}
+        for k in self.cards_by_months:
+            if k in month_chosen:
+                output[k] = self.cards_by_months[k]
+        return output
+
+    def filter_output(self) -> list:
+        """Returns month which were chosen by user"""
+        months_chosen = []
+        for item in self.table_display_data:
+            if item["to_save"] == True:
+                months_chosen.append(item["numeric_date"])
+        return months_chosen

@@ -34,14 +34,14 @@ def get_date_string_mon_name(timestamp):
     return dt_obj.strftime("%B %Y").lower()
 
 
-def output_results(news_info: list, save_location: str, add_save_folder: bool):
+def output_results(news_dict: dict, save_location: str, add_save_folder: bool):
     """Outputs results into folder results"""
 
     save_location = check_save_loc(save_location, add_save_folder)
 
-    for month_news_items in news_info:
-        timestamp = month_news_items[0]["Timestamp"]
+    for key in news_dict:
+        timestamp = news_dict[key][0]["Timestamp"]
         date_string = get_date_string_mon_name(timestamp)
         filename_date = get_date_string_mon_num(timestamp)
         filename = create_filename(save_location, filename_date)
-        create_doc(month_news_items, filename, date_string)
+        create_doc(news_dict[key], filename, date_string)

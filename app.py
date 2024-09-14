@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from src.config.exceptions import SavePathDoesNotExistException
+from src.config.exceptions import *
 from src.config.gui_config import *
 from customtkinter import filedialog
 import os, sys
@@ -119,21 +119,20 @@ class App(ctk.CTk):
             self.save_btn_part.configure(state="disabled")
 
     def on_save(self):
-        output = []
-        for item in self.table_months_data:
-            if item["to_save"] == True:
-                output.append(self.unstructured_news_data.get(item["numeric_date"]))
-        if len(output) > 0:
-            try:
-                output_results(output, self.save_path.get(), self.add_save_folder.get())
-                self.set_message_lbl_text(SUCCESS_MESSAGE, mode=SUCCESS)
-            except Exception as e:
-                if isinstance(e, SavePathDoesNotExistException):
-                    self.set_message_lbl_text(SAVE_PATH_DOES_NOT_EXIST)
-                    self.control_save_btn(switch_on=False)
-                else:
-                    self.set_message_lbl_text(e, mode=WARNING)
-                    print(e)
+
+        try:
+            to_output = self.noteBook.output_data()
+            output_results(to_output, self.save_path.get(), self.add_save_folder.get())
+        except Exception as e:
+            if isinstance(e, SavePathDoesNotExistException):
+                self.set_message_lbl_text(SAVE_PATH_DOES_NOT_EXIST, mode=WARNING)
+                self.control_save_btn(switch_on=False)
+            if isinstance(e, NoMonthsChosenException):
+                self.set_message_lbl_text(NO_MONTHS_CHOSEN, mode=WARNING)
+                self.control_save_btn(switch_on=False)
+            else:
+                self.set_message_lbl_text(e, mode=WARNING)
+                raise (e)
 
 
 App()
