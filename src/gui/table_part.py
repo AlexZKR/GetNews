@@ -11,7 +11,9 @@ from src.config.gui_config import *
 
 class TablePart(ctk.CTkFrame):
     def __init__(self, parent, btn_command):
-        super().__init__(master=parent, fg_color=DARK_GREEN)
+        super().__init__(
+            master=parent, fg_color=DARK_GREEN
+        )
 
         # layout
         self.columnconfigure(0, weight=1)
@@ -57,5 +59,15 @@ class TablePart(ctk.CTkFrame):
 
     def add_row(self, data: dict):
         self.row_count += 1
+        row_color = self.get_row_color()
+
         self.rowconfigure(self.row_count, weight=1, uniform="r", pad=0)
-        self.rows.append(TableRow(self, row_num=self.row_count, data=data))
+        self.rows.append(
+            TableRow(self, row_num=self.row_count, data=data, row_color=row_color)
+        )
+
+    def get_row_color(self):
+        if self.row_count % 2 == 0:
+            return TABLE_ROW_ALT_COLOR
+        else:
+            return DARK_GREEN

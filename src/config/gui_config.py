@@ -8,7 +8,7 @@ SAVE_PATH_NOT_CHOSEN = "Путь для сохранения не выбран"
 SAVE_PATH_DOES_NOT_EXIST = "Путь для сохранения не существует!"
 NO_INTERNET_CONNECTION = "Нет подключения к Интернету!"
 
-#SUCCESS_messages
+# SUCCESS_messages
 SUCCESS_MESSAGE = "Готово!"
 
 # widget_text
@@ -33,6 +33,9 @@ BUTTON_CORNER_RADIUS = 6
 # colors
 GREEN = "#50BFAB"
 DARK_GREEN = "#3A8A7B"
+
+TABLE_ROW_ALT_COLOR = "#50B6A3"
+
 TABLE_HEADER_ROW = "#25584E"
 WHITE = "#F2F2F2"
 BLACK = "#1F1F1F"

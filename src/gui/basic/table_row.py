@@ -5,9 +5,10 @@ from .table_row_lbl import TableRowLbl
 
 
 class TableRow(ctk.CTkFrame):
-    def __init__(self, parent, row_num, data):
-        super().__init__(master=parent, fg_color=DARK_GREEN, corner_radius=0)
+    def __init__(self, parent, row_num, data, row_color):
+        super().__init__(master=parent, fg_color=row_color, corner_radius=0)
         self.data = data
+        self.row_color = row_color
         # layout
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1, uniform="d")
@@ -43,7 +44,7 @@ class TableRow(ctk.CTkFrame):
             widget.bindtags((tag,) + widget.bindtags())
 
     def on_leave(self, *args):
-        self.configure(fg_color=DARK_GREEN)
+        self.configure(fg_color=self.row_color)
 
     def on_hover(self, *args):
         self.configure(fg_color=GRAY)

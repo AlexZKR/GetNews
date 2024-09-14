@@ -35,7 +35,7 @@ class App(ctk.CTk):
         super().__init__(fg_color=GREEN)
         self.title("")
         self.iconbitmap(resource_path("img\\icon.ico"))
-        self.geometry("420x500")
+        self.geometry("420x550")
         self.title("Get News 3.0")
         self.resizable(False, False)
         self.change_title_bar_color()

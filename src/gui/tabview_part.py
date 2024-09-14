@@ -10,7 +10,7 @@ from src.gui.table_part import TablePart
 
 class TabViewPart(ctk.CTkTabview):
     def __init__(self, parent, msg_lbl_command, save_btn_cmd):
-        super().__init__(master=parent)
+        super().__init__(master=parent, fg_color=DARK_GREEN)
 
         # from app
         self.set_msg_lbl_text = msg_lbl_command
