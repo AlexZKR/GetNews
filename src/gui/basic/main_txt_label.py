@@ -2,7 +2,7 @@ import customtkinter as ctk
 from src.config.gui_config import *
 
 
-class MainTxtLbl(ctk.CTkLabel):
+class MessageLbl(ctk.CTkLabel):
 
     def __init__(
         self,
@@ -19,5 +19,7 @@ class MainTxtLbl(ctk.CTkLabel):
             text_color=BLACK,
             padx=pad_x,
             pady=pad_y,
-            textvariable = variable
+            textvariable=variable,
         )
+        
+        self.grid(column=0, row=0)

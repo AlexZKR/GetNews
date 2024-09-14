@@ -16,11 +16,11 @@ class SavePathPart(ctk.CTkFrame):
 
         # widgets
         self.dialog_btn = CustomButton(
-            self, btn_command=btn_command, btn_text="Путь для сохранения", font_size=18
+            self, btn_command=btn_command, btn_text=SAVE_PATH_BTN_TEXT, font_size=18
         )
         self.add_folder_checkbox = ctk.CTkCheckBox(
             self,
-            text="Отдельная папка",
+            text=ADD_FOLDER_CHECBOX_TEXT,
             variable=check_variable,
             text_color=BLACK,
             font=ctk.CTkFont(family=FONT, size=SAVE_PATH_FONT_SIZE),

@@ -1,17 +1,17 @@
 import customtkinter as ctk
-from src.config.exceptions import NoInternetException, SavePathDoesNotExistException
+from src.config.exceptions import SavePathDoesNotExistException
 from src.config.gui_config import *
 from customtkinter import filedialog
-import datetime, os, sys
+import os, sys
 
-from src.gui.request_part import RequestPart
-from src.gui.table_part import TablePart
+from src.gui.basic.main_txt_label import MessageLbl
 from src.gui.save_path_part import SavePathPart
 from src.gui.basic.button import CustomButton
 
 
+from src.gui.tabview_part import TabViewPart
 from src.output_data.scraper_output import output_results
-from src.get_data.parse_json import parseRawData
+
 
 try:
     from ctypes import windll, byref, sizeof, c_int
@@ -35,7 +35,7 @@ class App(ctk.CTk):
         super().__init__(fg_color=GREEN)
         self.title("")
         self.iconbitmap(resource_path("img\\icon.ico"))
-        self.geometry("420x420")
+        self.geometry("420x650")
         self.title("Get News 3.0")
         self.resizable(False, False)
         self.change_title_bar_color()
@@ -44,32 +44,35 @@ class App(ctk.CTk):
         # layout
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1, uniform="a")
-        self.rowconfigure(1, weight=2, uniform="a")
+        self.rowconfigure(1, weight=4, uniform="a")
         self.rowconfigure(2, weight=1, uniform="a")
         self.rowconfigure(3, weight=1, uniform="a")
 
         # ctk variables
 
-        self.message_label = ctk.StringVar(value=". . .")
-        self.save_path = ctk.StringVar(value="Путь для сохранения не выбран")
+        self.message_txt = ctk.StringVar(value=MESSAGE_LBL_DEFAULT_TEXT)
+        self.save_path = ctk.StringVar(value=SAVE_PATH_NOT_CHOSEN)
         self.add_save_folder = ctk.BooleanVar(value=True)
 
-        # data
-        self.news_data = None
-        self.table_data = []
-
         # widgets
-        self.request_part = RequestPart(
-            self, btn_command=self.get_news_data, variable=self.message_label
+        self.message_lbl = MessageLbl(
+            self, lbl_text="", pad_y=10, variable=self.message_txt
         )
-        self.table_part = TablePart(self)
-        
+        self.noteBook = TabViewPart(
+            self,
+            msg_lbl_command=self.set_message_lbl_text,
+            save_btn_cmd=self.control_save_btn,
+        )
+
         self.save_path_part = SavePathPart(
             self, self.save_path, self.get_save_path, self.add_save_folder
         )
 
         self.save_btn_part = CustomButton(
-            self, btn_text="Сохранить", btn_command=self.on_save, state="disabled"
+            self,
+            btn_text=SAVE_RESULTS_BTN_TEXT,
+            btn_command=self.on_save,
+            state="disabled",
         )
         self.save_btn_part.grid(column=0, row=3, sticky="ew", padx=40)
 
@@ -77,7 +80,7 @@ class App(ctk.CTk):
 
     def get_save_path(self):
         self.save_path.set(filedialog.askdirectory())
-        self.control_save_btn()
+        self.control_save_btn(switch_on=True)
 
     def change_title_bar_color(self):
         try:
@@ -92,68 +95,44 @@ class App(ctk.CTk):
 
     def on_closing(self):
         # Cancel any pending callbacks
-        self.after_cancel(self.request_part)
-        self.after_cancel(self.table_part)
+        self.after_cancel(self.noteBook)
         self.after_cancel(self.save_path_part)
         self.destroy()
 
-    def get_news_data(self):
-        try:
-            self.news_data = parseRawData()
-            self.message_label.set(self.get_total_results(self.news_data))
-            self.fill_table()
-            self.control_save_btn()
-        except Exception as e:
-            if isinstance(e, NoInternetException):
-                self.message_label.set("Нет подключения к Интернету!")
-            else:
-                print(e)
+    def set_message_lbl_text(self, text: str, mode: int = 0):
+        """mode - INFO, WARNING, SUCCESS"""
+        self.message_txt.set(text)
+        if mode == WARNING:
+            self.message_lbl.configure(text_color=WARNING_COLOR)
+        if mode == INFO:
+            self.message_lbl.configure(text_color=BLACK)
+        if mode == SUCCESS:
+            self.message_lbl.configure(text_color=GREEN)
 
-    def fill_table(self):
-        for k in self.news_data.keys():
-            tmp = {}
-            tmp["ru_date"] = self.parse_datestring(k).strftime("%B %Y")
-            tmp["numeric_date"] = k
-            tmp["count"] = len(self.news_data[k])
-            tmp["to_save"] = False
-            self.table_data.append(tmp)
-
-            self.table_part.add_row(tmp)
-
-    def get_total_results(self, data):
-        total_results = sum(len(v) for v in data.values())
-        if total_results <= 0:
-            return f"Получено {total_results} новостных карточек. Что-то пошло не так"
-        else:
-            return f"Получено {total_results} новостных карточек"
-
-    def parse_datestring(self, string):
-        return datetime.datetime.strptime(string, "%m.%Y")
-
-    def control_save_btn(self):
-        if self.news_data == None:
-            return
-        if len(self.news_data.items()) > 0 and (
-            self.save_path.get() != "Путь для сохранения не выбран"
-            or self.save_path.get() != "Путь для сохранения не существует!"
+    def control_save_btn(self, switch_on=False):
+        if switch_on is True and (
+            self.save_path.get() != SAVE_PATH_NOT_CHOSEN
+            and self.save_path.get() != SAVE_PATH_DOES_NOT_EXIST
         ):
             self.save_btn_part.configure(state="normal")
+        else:
+            self.save_btn_part.configure(state="disabled")
 
     def on_save(self):
         output = []
-        for item in self.table_data:
+        for item in self.table_months_data:
             if item["to_save"] == True:
-                output.append(self.news_data.get(item["numeric_date"]))
+                output.append(self.unstructured_news_data.get(item["numeric_date"]))
         if len(output) > 0:
             try:
                 output_results(output, self.save_path.get(), self.add_save_folder.get())
-                self.message_label.set("Готово!")
+                self.set_message_lbl_text(SUCCESS_MESSAGE, mode=SUCCESS)
             except Exception as e:
                 if isinstance(e, SavePathDoesNotExistException):
-                    self.message_label.set("Путь для сохранения не существует!")
-                    self.control_save_btn()
+                    self.set_message_lbl_text(SAVE_PATH_DOES_NOT_EXIST)
+                    self.control_save_btn(switch_on=False)
                 else:
-                    self.message_label.set(e)
+                    self.set_message_lbl_text(e, mode=WARNING)
                     print(e)
 
 

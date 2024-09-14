@@ -10,9 +10,9 @@ class TableRow(ctk.CTkFrame):
         self.data = data
         # layout
         self.rowconfigure(0, weight=1)
-        self.columnconfigure(0, weight=1, uniform="a")
-        self.columnconfigure(1, weight=1, uniform="a")
-        self.columnconfigure(2, weight=1, uniform="a")
+        self.columnconfigure(0, weight=1, uniform="d")
+        self.columnconfigure(1, weight=1, uniform="d")
+        self.columnconfigure(2, weight=1, uniform="d")
 
         # widgets
         checkbox = ctk.CTkCheckBox(
@@ -22,14 +22,14 @@ class TableRow(ctk.CTkFrame):
             hover_color=GREEN,
             command=self.on_checked,
         )
-        periodLbl = TableRowLbl(self, lbl_text=self.data["ru_date"])
+        periodLbl = TableRowLbl(self, lbl_text=self.data["ru_month"])
         countLbl = TableRowLbl(self, lbl_text=self.data["count"])
 
         checkbox.grid(row=0, column=0, sticky="ns", padx=45)
         periodLbl.grid(row=0, column=1, sticky="n")
         countLbl.grid(row=0, column=2, sticky="n")
 
-        self.grid(column=0, row=row_num, sticky="ew", ipady=4)
+        self.grid(column=0, row=row_num, sticky="ew", ipady=5)
 
         # events
         bind_tag = f"row{row_num}_widgets"
