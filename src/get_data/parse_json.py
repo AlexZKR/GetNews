@@ -40,19 +40,20 @@ def get_total_results(data):
 def sort_by_month(raw_data):
     result = {}
     for item in raw_data:
-        mon_str = get_mon_str(item["Timestamp"])
+        mon_str = get_mon_digit_str(item["Timestamp"])
         if mon_str not in result:
             result[mon_str] = []
         result[mon_str].append(item)
     return result
 
 
-def get_mon_str(timestamp):
+def get_mon_digit_str(timestamp):
     return datetime.datetime.fromtimestamp(timestamp).strftime("%m.%Y")
 
 
-def parse_datestring(string):
-    return datetime.datetime.strptime(string, "%m.%Y")
+def get_mon_ru_str(string):
+    locale.setlocale(locale.LC_TIME, "ru")
+    return datetime.datetime.strptime(string, "%m.%Y").strftime("%B %Y")
 
 
 def get_russian_txt_date(dt_object):

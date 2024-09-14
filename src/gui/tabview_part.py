@@ -2,7 +2,7 @@ import customtkinter as ctk
 
 from src.config.exceptions import NoInternetException
 from src.config.gui_config import *
-from src.get_data.parse_json import get_total_results, parseRawData, sort_by_month
+from src.get_data.parse_json import get_mon_ru_str, get_total_results, parseRawData, sort_by_month
 from src.gui.table_part import TablePart
 
 # https://customtkinter.tomschimansky.com/documentation/widgets/tabview
@@ -50,11 +50,10 @@ class TabViewPart(ctk.CTkTabview):
     def fill_table(self):
         for k in self.cards_by_months:
             tmp = {}
-            tmp["ru_month"] = k
+            tmp["ru_month"] = get_mon_ru_str(k)
             tmp["numeric_date"] = k
             tmp["count"] = len(self.cards_by_months[k])
             tmp["to_save"] = False
             self.table_display_data.append(tmp)
 
             self.table_part.add_row(tmp)
-        print(self.table_display_data)
