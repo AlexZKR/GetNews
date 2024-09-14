@@ -18,31 +18,41 @@ class TablePart(ctk.CTkFrame):
         self.rowconfigure(0, weight=1, uniform="a")
         self.rowconfigure(1, weight=2, uniform="a")
 
-        btn = CustomButton(
-            self,
-            btn_text=QUERY_BTN_TEXT,
-            btn_command=btn_command,
+        # frames
+        self.header_frame = ctk.CTkFrame(
+            self, fg_color=TABLE_HEADER_ROW, corner_radius=0
         )
-        btn.grid(column=0, row=0)
+        # header row frame
+        self.upper_row_frame = ctk.CTkFrame(
+            self.header_frame, fg_color=TABLE_HEADER_ROW, corner_radius=0
+        )
         # headings
-
-        header_frame = ctk.CTkFrame(self, fg_color=TABLE_HEADER_ROW, corner_radius=0)
-
-        save_chck_row_heading = TableHeaderLbl(header_frame, lbl_text="Сохранить")
-        period_row_heading = TableHeaderLbl(header_frame, lbl_text="Период")
-        count_row_heading = TableHeaderLbl(header_frame, lbl_text="Количество")
-
-        header_frame.grid(column=0, row=1, sticky="new", ipady=1)
-
+        save_chck_row_heading = TableHeaderLbl(
+            self.upper_row_frame, lbl_text="Сохранить"
+        )
+        period_row_heading = TableHeaderLbl(self.upper_row_frame, lbl_text="Период")
+        count_row_heading = TableHeaderLbl(self.upper_row_frame, lbl_text="Количество")
+        # headings layout
         save_chck_row_heading.pack(side="left", anchor="n", expand=True)
         period_row_heading.pack(side="left", anchor="n", expand=True)
         count_row_heading.pack(side="left", anchor="n", expand=True)
+
+        # widgets
+        btn = CustomButton(
+            self.header_frame,
+            btn_text=QUERY_BTN_TEXT,
+            btn_command=btn_command,
+        )
+
+        # table part layout
+        self.header_frame.grid(column=0, row=0, sticky="new", ipady=1)
+        btn.pack(expand=True, fill="both", padx=10, pady=5)
+        self.upper_row_frame.pack(expand=True, fill="x")
 
         # rows
         self.rows = []
         self.row_count = 0
 
-        # self.grid(column=0, row=1, sticky="nsew")
         self.pack(expand=True, fill="both")
 
     def add_row(self, data: dict):
