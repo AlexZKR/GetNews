@@ -7,14 +7,13 @@ from ..config.exceptions import SavePathDoesNotExistException
 
 
 def check_save_loc(save_location: str, add_folder: bool):
+    if not os.path.exists(save_location):
+        raise SavePathDoesNotExistException
     dt_now = (dt.now()).strftime("%d.%m.%Y")
     final_save_path = save_location
     if add_folder == True:
         final_save_path = f"{save_location}/Results {dt_now}"
-        if not os.path.exists(final_save_path):
-            os.makedirs(final_save_path)
-    if not os.path.exists(final_save_path):
-        raise SavePathDoesNotExistException
+        os.makedirs(final_save_path)
     return final_save_path
 
 
@@ -36,9 +35,7 @@ def get_date_string_mon_name(timestamp):
 
 def output_results(news_dict: dict, save_location: str, add_save_folder: bool):
     """Outputs results into folder results"""
-
     save_location = check_save_loc(save_location, add_save_folder)
-
     for key in news_dict:
         timestamp = news_dict[key][0]["Timestamp"]
         date_string = get_date_string_mon_name(timestamp)

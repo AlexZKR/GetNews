@@ -80,7 +80,7 @@ class App(ctk.CTk):
 
     def get_save_path(self):
         self.save_path.set(filedialog.askdirectory())
-        self.control_save_btn(switch_on=True)
+        self.control_save_btn()
 
     def change_title_bar_color(self):
         try:
@@ -107,29 +107,30 @@ class App(ctk.CTk):
         if mode == INFO:
             self.message_lbl.configure(text_color=BLACK)
         if mode == SUCCESS:
-            self.message_lbl.configure(text_color=GREEN)
+            self.message_lbl.configure(text_color=SUCCESS_COLOR)
 
-    def control_save_btn(self, switch_on=False):
-        if switch_on is True and (
+    def control_save_btn(self):
+        if (self.noteBook.has_data is True) and (
             self.save_path.get() != SAVE_PATH_NOT_CHOSEN
-            and self.save_path.get() != SAVE_PATH_DOES_NOT_EXIST
         ):
             self.save_btn_part.configure(state="normal")
         else:
             self.save_btn_part.configure(state="disabled")
 
     def on_save(self):
-
         try:
             to_output = self.noteBook.output_data()
             output_results(to_output, self.save_path.get(), self.add_save_folder.get())
+            self.set_message_lbl_text(SUCCESS_MESSAGE, mode=SUCCESS)
         except Exception as e:
             if isinstance(e, SavePathDoesNotExistException):
-                self.set_message_lbl_text(SAVE_PATH_DOES_NOT_EXIST, mode=WARNING)
-                self.control_save_btn(switch_on=False)
+                self.set_message_lbl_text(text=SAVE_PATH_DOES_NOT_EXIST, mode=WARNING)
+                self.control_save_btn()
+                return
             if isinstance(e, NoMonthsChosenException):
-                self.set_message_lbl_text(NO_MONTHS_CHOSEN, mode=WARNING)
-                self.control_save_btn(switch_on=False)
+                self.set_message_lbl_text(text=NO_MONTHS_CHOSEN, mode=WARNING)
+                self.control_save_btn()
+                return
             else:
                 self.set_message_lbl_text(e, mode=WARNING)
                 raise (e)

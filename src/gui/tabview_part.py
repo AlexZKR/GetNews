@@ -21,7 +21,7 @@ class TabViewPart(ctk.CTkTabview):
         # from app
         self.set_msg_lbl_text = msg_lbl_command
         self.control_save_btn_cmd = save_btn_cmd
-
+        self.has_data = False
         # tabs
         self.months_tab = self.add(MONTHS_TAB_NAME)
         self.period_tab = self.add(PERIOD_TAB_NAME)
@@ -42,14 +42,16 @@ class TabViewPart(ctk.CTkTabview):
 
     def get_news_data(self):
         try:
+            self.table_part.clear_table()
             self.unstructured_news_data = parseRawData()
+            self.has_data = True
             self.set_msg_lbl_text(get_total_results(self.unstructured_news_data))
             self.cards_by_months = sort_by_month(self.unstructured_news_data)
             self.fill_table()
-            self.control_save_btn_cmd(switch_on=True)
+            self.control_save_btn_cmd()
         except Exception as e:
             if isinstance(e, NoInternetException):
-                self.set_msg_lbl_text(NO_INTERNET_CONNECTION)
+                self.set_msg_lbl_text(NO_INTERNET_CONNECTION, WARNING)
             else:
                 raise e
 

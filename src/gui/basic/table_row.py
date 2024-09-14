@@ -54,3 +54,6 @@ class TableRow(ctk.CTkFrame):
             self.data["to_save"] = True
         else:
             self.data["to_save"] = False
+
+    def exterminate(self):
+        self.grid_forget()

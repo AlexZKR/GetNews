@@ -1,6 +1,6 @@
 # message label modes
-WARNING = 1
 INFO = 0
+WARNING = 1
 SUCCESS = 2
 
 # ERROR_messages
@@ -36,6 +36,7 @@ BUTTON_CORNER_RADIUS = 6
 
 # colors
 GREEN = "#50BFAB"
+SUCCESS_COLOR = "#5064BE"
 DARK_GREEN = "#3A8A7B"
 
 TABLE_ROW_ALT_COLOR = "#50B6A3"
