@@ -56,7 +56,7 @@ class SavePathPart(ctk.CTkFrame):
         self.add_folder_checkbox.grid(row=0, column=1, sticky="ns", ipady=40)
         self.save_path_lbl.grid(row=1, column=0, columnspan=2, sticky="nsew")
         self.save_btn_part.grid(
-            column=0, row=2, columnspan=2, sticky="ew", padx=40, pady=10
+            column=0, row=2, columnspan=2, sticky="ew", padx=25, pady=10
         )
 
     def get_save_path(self):

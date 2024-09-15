@@ -18,7 +18,7 @@ GENERAL_QUERY_BTN_TEXT = "Получить новости из Интернет�
 MESSAGE_LBL_DEFAULT_TEXT = ". . ."
 ADD_FOLDER_CHECBOX_TEXT = "Отдельная папка"
 SAVE_PATH_BTN_TEXT = "Путь для сохранения"
-SAVE_RESULTS_BTN_TEXT = "Сохранить"
+SAVE_RESULTS_BTN_TEXT = "Сохранить выбранные новости"
 
 # Tabs titles
 MONTHS_TAB_NAME = "Месяцы"
