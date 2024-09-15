@@ -1,6 +1,8 @@
 import customtkinter as ctk
+from src.config.exceptions import NoMonthsChosenException
 from src.config.gui_config import *
 
+from src.get_data.parse_json import get_mon_ru_str, sort_by_month
 from src.gui.basic.button import CustomButton
 
 
@@ -8,10 +10,13 @@ from .basic.table_header_lbl import TableHeaderLbl
 from .basic.table_row import TableRow
 
 
-
 class TablePart(ctk.CTkFrame):
     def __init__(self, parent, btn_command):
         super().__init__(master=parent, fg_color=DARK_GREEN)
+
+        # data
+        self.cards_by_months = {}
+        self.table_display_data = []
 
         # layout
         self.columnconfigure(0, weight=1)
@@ -32,6 +37,7 @@ class TablePart(ctk.CTkFrame):
         )
         period_row_heading = TableHeaderLbl(self.upper_row_frame, lbl_text="Период")
         count_row_heading = TableHeaderLbl(self.upper_row_frame, lbl_text="Количество")
+
         # headings layout
         save_chck_row_heading.pack(side="left", anchor="n", expand=True)
         period_row_heading.pack(side="left", anchor="n", expand=True)
@@ -55,6 +61,44 @@ class TablePart(ctk.CTkFrame):
 
         self.pack(expand=True, fill="both")
 
+    def fill_table(self, unsorted_data):
+        self.cards_by_months = sort_by_month(unsorted_data)
+        for k in self.cards_by_months:
+            tmp = {}
+            tmp["ru_month"] = get_mon_ru_str(k)
+            tmp["numeric_date"] = k
+            tmp["count"] = len(self.cards_by_months[k])
+            tmp["to_save"] = False
+            self.table_display_data.append(tmp)
+
+            self.add_row(tmp)
+
+    def clear_table(self):
+        self.table_display_data.clear()
+        self.cards_by_months.clear()
+        for row in self.rows:
+            row.exterminate()
+        self.row_count = 0
+        self.rows.clear()
+
+    def output(self) -> dict:
+        output = {}
+        month_chosen = self.get_months_chosen()
+        for k in self.cards_by_months:
+            if k in month_chosen:
+                output[k] = self.cards_by_months[k]
+        return output
+
+    def get_months_chosen(self) -> list:
+        """Returns month which were chosen by user"""
+        months_chosen = []
+        for item in self.table_display_data:
+            if item["to_save"] == True:
+                months_chosen.append(item["numeric_date"])
+        if len(months_chosen) == 0:
+            raise NoMonthsChosenException
+        return months_chosen
+
     def add_row(self, data: dict):
         self.row_count += 1
         row_color = self.get_row_color()
@@ -63,12 +107,6 @@ class TablePart(ctk.CTkFrame):
         self.rows.append(
             TableRow(self, row_num=self.row_count, data=data, row_color=row_color)
         )
-
-    def clear_table(self):
-        for row in self.rows:
-            row.exterminate()
-        self.row_count = 0
-        self.rows.clear()
 
     def get_row_color(self):
         if self.row_count % 2 == 0:

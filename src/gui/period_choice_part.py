@@ -18,9 +18,13 @@ class PeriodChoicePart(ctk.CTkFrame):
 
         self.rowconfigure((0, 1, 2, 3), weight=1, uniform="f")
 
+        # ctk variables
+        earlier = ctk.StringVar()
+        later = ctk.StringVar()
+
         # widgets
-        self.earlier_dateEntry = CustomDateEntry(self)
-        self.later_dateEntry = CustomDateEntry(self)
+        self.earlier_dateEntry = CustomDateEntry(self, variable=earlier)
+        self.later_dateEntry = CustomDateEntry(self, variable=later)
 
         # labels
         self.header_lbl = MessageLbl(
@@ -44,3 +48,5 @@ class PeriodChoicePart(ctk.CTkFrame):
         self.later_dateEntry.grid(column=1, row=2, sticky="w", padx=30)
         self.query_btn.grid(column=0, columnspan=2, row=3, sticky="ew", padx=10, pady=5)
         self.pack(expand=True, fill="both")
+
+        
