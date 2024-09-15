@@ -11,10 +11,11 @@ from .basic.table_row import TableRow
 
 
 class TablePart(ctk.CTkFrame):
-    def __init__(self, parent, btn_command):
+    def __init__(self, parent, unsorted_data):
         super().__init__(master=parent, fg_color=DARK_GREEN)
 
         # data
+        self.unsorted_data = unsorted_data
         self.cards_by_months = {}
         self.table_display_data = []
 
@@ -44,15 +45,16 @@ class TablePart(ctk.CTkFrame):
         count_row_heading.pack(side="left", anchor="n", expand=True)
 
         # widgets
-        btn = CustomButton(
+        self.sort_btn = CustomButton(
             self.header_frame,
-            btn_text=QUERY_BTN_TEXT,
-            btn_command=btn_command,
+            btn_text=TABLE_FILL_BTN_TEXT,
+            btn_command=self.fill_table,
+            state="disabled",
         )
 
         # table part layout
         self.header_frame.grid(column=0, row=0, sticky="new", ipady=1)
-        btn.pack(expand=True, fill="both", padx=10, pady=5)
+        self.sort_btn.pack(expand=True, fill="both", padx=10, pady=5)
         self.upper_row_frame.pack(expand=True, fill="x")
 
         # rows
@@ -61,8 +63,11 @@ class TablePart(ctk.CTkFrame):
 
         self.pack(expand=True, fill="both")
 
-    def fill_table(self, unsorted_data):
-        self.cards_by_months = sort_by_month(unsorted_data)
+    def enable_sort_btn(self):
+        self.sort_btn.configure(state="normal")
+
+    def fill_table(self):
+        self.cards_by_months = sort_by_month(self.unsorted_data)
         for k in self.cards_by_months:
             tmp = {}
             tmp["ru_month"] = get_mon_ru_str(k)
@@ -74,12 +79,13 @@ class TablePart(ctk.CTkFrame):
             self.add_row(tmp)
 
     def clear_table(self):
-        self.table_display_data.clear()
-        self.cards_by_months.clear()
         for row in self.rows:
             row.exterminate()
         self.row_count = 0
         self.rows.clear()
+
+        self.cards_by_months.clear()
+        self.table_display_data.clear()
 
     def output(self) -> dict:
         output = {}

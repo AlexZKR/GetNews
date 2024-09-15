@@ -11,6 +11,7 @@ class CustomButton(ctk.CTkButton):
         btn_command,
         state="normal",
         font_size=INPUT_FONT_SIZE,
+        anchor="center",
     ):
         super().__init__(
             master=parent,
@@ -22,4 +23,5 @@ class CustomButton(ctk.CTkButton):
             hover_color=GRAY,
             corner_radius=BUTTON_CORNER_RADIUS,
             state=state,
+            anchor=anchor,
         )

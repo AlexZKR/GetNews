@@ -9,8 +9,11 @@ from src.gui.basic.smaller_lbl import SmallerLbl
 
 
 class PeriodChoicePart(ctk.CTkFrame):
-    def __init__(self, parent):
+    def __init__(self, parent, unsorted_data):
         super().__init__(master=parent, fg_color=DARK_GREEN)
+
+        # data
+        self.unsorted_data = unsorted_data
 
         # layout
         self.columnconfigure(0, weight=1, uniform="f")
@@ -37,7 +40,10 @@ class PeriodChoicePart(ctk.CTkFrame):
             self, lbl_text=LATER_DATE_LBL, variable=None, font_size=20
         )
         self.query_btn = CustomButton(
-            self, btn_text=PERIOD_TAB_QUERY_BTN_TEXT, btn_command=None
+            self,
+            btn_text=PERIOD_TAB_QUERY_BTN_TEXT,
+            btn_command=self.get_news_for_period,
+            state="disabled",
         )
 
         # placing
@@ -49,4 +55,8 @@ class PeriodChoicePart(ctk.CTkFrame):
         self.query_btn.grid(column=0, columnspan=2, row=3, sticky="ew", padx=10, pady=5)
         self.pack(expand=True, fill="both")
 
-        
+    def enable_query_btn(self):
+        self.query_btn.configure(state="normal")
+
+    def get_news_for_period(self):
+        pass

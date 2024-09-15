@@ -1,15 +1,13 @@
 import customtkinter as ctk
 from src.config.exceptions import *
 from src.config.gui_config import *
-from customtkinter import filedialog
+
 import os, sys
 
-from src.gui.basic.message_label import MessageLbl
-from src.gui.save_path_part import SavePathPart
-from src.gui.basic.button import CustomButton
-
-
+from src.gui.upper_info_part import UpperInfoPart
 from src.gui.tabview_part import TabViewPart
+from src.gui.save_path_part import SavePathPart
+
 from src.output_data.scraper_output import output_results
 
 
@@ -33,54 +31,37 @@ class App(ctk.CTk):
 
         # window setup
         super().__init__(fg_color=GREEN)
-        self.title("")
+        self.configure_window()
+
+        # window layout
+        self.columnconfigure(0, weight=1)
+        self.rowconfigure(0, weight=1, uniform="a")
+        self.rowconfigure(1, weight=2, uniform="a")
+        self.rowconfigure(2, weight=1, uniform="a")
+
+        # window widgets
+
+        self.upper_info_part = UpperInfoPart(
+            self,
+            get_data_cmd=self.on_get,
+        )
+        self.noteBook = TabViewPart(self)
+        self.save_path_part = SavePathPart(self, self.on_save)
+
+        self.upper_info_part.grid(column=0, row=0, sticky="nsew", padx=20, pady=10)
+        self.noteBook.grid(column=0, row=1, sticky="nsew")
+        self.save_path_part.grid(column=0, row=2, sticky="ew", padx=15, pady=10)
+        # window widgets layout
+
+        self.mainloop()
+
+    def configure_window(self):
         self.iconbitmap(resource_path("img\\icon.ico"))
-        self.geometry("420x550")
+        self.geometry("420x540")
         self.title("Get News 3.5")
         self.resizable(False, False)
         self.change_title_bar_color()
         self.protocol("WM_DELETE_WINDOW", self.on_closing)
-
-        # layout
-        self.columnconfigure(0, weight=1)
-        self.rowconfigure(0, weight=1, uniform="a")
-        self.rowconfigure(1, weight=4, uniform="a")
-        self.rowconfigure(2, weight=1, uniform="a")
-        self.rowconfigure(3, weight=1, uniform="a")
-
-        # ctk variables
-
-        self.message_txt = ctk.StringVar(value=MESSAGE_LBL_DEFAULT_TEXT)
-        self.save_path = ctk.StringVar(value=SAVE_PATH_NOT_CHOSEN)
-        self.add_save_folder = ctk.BooleanVar(value=True)
-
-        # widgets
-        self.message_lbl = MessageLbl(
-            self, lbl_text="", pad_y=10, variable=self.message_txt
-        )
-        self.noteBook = TabViewPart(
-            self,
-            msg_lbl_command=self.set_message_lbl_text,
-            save_btn_cmd=self.control_save_btn,
-        )
-
-        self.save_path_part = SavePathPart(
-            self, self.save_path, self.get_save_path, self.add_save_folder
-        )
-
-        self.save_btn_part = CustomButton(
-            self,
-            btn_text=SAVE_RESULTS_BTN_TEXT,
-            btn_command=self.on_save,
-            state="disabled",
-        )
-        self.save_btn_part.grid(column=0, row=3, sticky="ew", padx=40)
-
-        self.mainloop()
-
-    def get_save_path(self):
-        self.save_path.set(filedialog.askdirectory())
-        self.control_save_btn()
 
     def change_title_bar_color(self):
         try:
@@ -99,40 +80,43 @@ class App(ctk.CTk):
         self.after_cancel(self.save_path_part)
         self.destroy()
 
-    def set_message_lbl_text(self, text: str, mode: int = 0):
-        """mode - INFO, WARNING, SUCCESS"""
-        self.message_txt.set(text)
-        if mode == WARNING:
-            self.message_lbl.configure(text_color=WARNING_COLOR)
-        if mode == INFO:
-            self.message_lbl.configure(text_color=BLACK)
-        if mode == SUCCESS:
-            self.message_lbl.configure(text_color=SUCCESS_COLOR)
-
-    def control_save_btn(self):
-        if (self.noteBook.has_data is True) and (
-            self.save_path.get() != SAVE_PATH_NOT_CHOSEN
-        ):
-            self.save_btn_part.configure(state="normal")
-        else:
-            self.save_btn_part.configure(state="disabled")
+    def on_get(self):
+        try:
+            result_message = self.noteBook.get_data()
+            self.upper_info_part.message_txt.set(result_message)
+            self.save_path_part.has_data = True
+        except Exception as e:
+            if isinstance(e, NoInternetException):
+                self.upper_info_part.set_message_lbl_text(
+                    NO_INTERNET_CONNECTION, WARNING
+                )
+            else:
+                raise e
 
     def on_save(self):
         try:
             to_output = self.noteBook.output_data()
-            output_results(to_output, self.save_path.get(), self.add_save_folder.get())
-            self.set_message_lbl_text(SUCCESS_MESSAGE, mode=SUCCESS)
+            output_results(
+                to_output,
+                self.save_path_part.save_path.get(),
+                self.save_path_part.add_save_folder.get(),
+            )
+            self.upper_info_part.set_message_lbl_text(SUCCESS_MESSAGE, mode=SUCCESS)
         except Exception as e:
             if isinstance(e, SavePathDoesNotExistException):
-                self.set_message_lbl_text(text=SAVE_PATH_DOES_NOT_EXIST, mode=WARNING)
-                self.control_save_btn()
+                self.upper_info_part.set_message_lbl_text(
+                    text=SAVE_PATH_DOES_NOT_EXIST, mode=WARNING
+                )
+                self.save_path_part.control_save_btn()
                 return
             if isinstance(e, NoMonthsChosenException):
-                self.set_message_lbl_text(text=NO_MONTHS_CHOSEN, mode=WARNING)
-                self.control_save_btn()
+                self.upper_info_part.set_message_lbl_text(
+                    text=NO_MONTHS_CHOSEN, mode=WARNING
+                )
+                self.save_path_part.control_save_btn()
                 return
             else:
-                self.set_message_lbl_text(e, mode=WARNING)
+                self.upper_info_part.set_message_lbl_text(e, mode=WARNING)
                 raise (e)
 
 

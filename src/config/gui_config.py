@@ -13,27 +13,30 @@ NO_MONTHS_CHOSEN = "Выберите месяцы!"
 SUCCESS_MESSAGE = "Готово!"
 
 # widget_text
+GENERAL_QUERY_BTN_TEXT = "Получить новости из Интернета"
 MESSAGE_LBL_DEFAULT_TEXT = ". . ."
-QUERY_BTN_TEXT = "Выполнить запрос"
 ADD_FOLDER_CHECBOX_TEXT = "Отдельная папка"
 SAVE_PATH_BTN_TEXT = "Путь для сохранения"
 SAVE_RESULTS_BTN_TEXT = "Сохранить"
 
+# Tabs titles
 MONTHS_TAB_NAME = "Месяцы"
 PERIOD_TAB_NAME = "За период"
+
+# Months tab text
+TABLE_FILL_BTN_TEXT = "Заполнить таблицу"
 
 # Period tab text
 TAB_PERIOD_HEADING_TEXT = "Выгрузка новостей за указанный период"
 EARLIER_DATE_LBL = "От:"
 LATER_DATE_LBL = "До:"
-PERIOD_TAB_QUERY_BTN_TEXT = "Выполнить запрос"
+PERIOD_TAB_QUERY_BTN_TEXT = "Получить новости за период"
 
 # text_sizes
 FONT = "Calibri"
 INPUT_FONT_SIZE = 23
 SAVE_PATH_FONT_SIZE = 15
 CALENDAR_ENTRY_FONT_SIZE = 24
-
 
 
 # table font sizes

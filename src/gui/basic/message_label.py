@@ -17,4 +17,4 @@ class MessageLbl(ctk.CTkLabel):
             textvariable=variable,
         )
 
-        self.grid(column=0, row=0, sticky="nsew", padx=10)
+        
