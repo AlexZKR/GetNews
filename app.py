@@ -4,7 +4,7 @@ from src.config.gui_config import *
 from customtkinter import filedialog
 import os, sys
 
-from src.gui.basic.main_txt_label import MessageLbl
+from src.gui.basic.message_label import MessageLbl
 from src.gui.save_path_part import SavePathPart
 from src.gui.basic.button import CustomButton
 
@@ -36,7 +36,7 @@ class App(ctk.CTk):
         self.title("")
         self.iconbitmap(resource_path("img\\icon.ico"))
         self.geometry("420x550")
-        self.title("Get News 3.0")
+        self.title("Get News 3.5")
         self.resizable(False, False)
         self.change_title_bar_color()
         self.protocol("WM_DELETE_WINDOW", self.on_closing)

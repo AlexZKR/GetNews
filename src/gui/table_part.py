@@ -1,4 +1,5 @@
 import customtkinter as ctk
+from src.config.gui_config import *
 
 from src.gui.basic.button import CustomButton
 
@@ -6,7 +7,6 @@ from src.gui.basic.button import CustomButton
 from .basic.table_header_lbl import TableHeaderLbl
 from .basic.table_row import TableRow
 
-from src.config.gui_config import *
 
 
 class TablePart(ctk.CTkFrame):

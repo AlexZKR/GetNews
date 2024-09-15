@@ -22,10 +22,18 @@ SAVE_RESULTS_BTN_TEXT = "Сохранить"
 MONTHS_TAB_NAME = "Месяцы"
 PERIOD_TAB_NAME = "За период"
 
+# Period tab text
+TAB_PERIOD_HEADING_TEXT = "Выгрузка новостей за указанный период"
+EARLIER_DATE_LBL = "От:"
+LATER_DATE_LBL = "До:"
+PERIOD_TAB_QUERY_BTN_TEXT = "Выполнить запрос"
+
 # text_sizes
 FONT = "Calibri"
 INPUT_FONT_SIZE = 23
 SAVE_PATH_FONT_SIZE = 15
+CALENDAR_ENTRY_FONT_SIZE = 24
+
 
 
 # table font sizes

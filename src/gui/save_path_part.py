@@ -3,7 +3,7 @@ from src.config.gui_config import *
 
 
 from .basic.button import CustomButton
-from .basic.save_path_lbl import SavePathLbl
+from .basic.smaller_lbl import SmallerLbl
 
 
 class SavePathPart(ctk.CTkFrame):
@@ -28,7 +28,7 @@ class SavePathPart(ctk.CTkFrame):
             checkbox_width=20,
             hover_color=GREEN,
         )
-        self.save_path_lbl = SavePathLbl(self, lbl_text="", variable=save_path_var)
+        self.save_path_lbl = SmallerLbl(self, lbl_text="", variable=save_path_var)
 
         self.dialog_btn.grid(row=0, column=0, sticky="nsew", ipady=40, padx=4, pady=2)
         self.add_folder_checkbox.grid(row=0, column=1, sticky="ns", ipady=40)
