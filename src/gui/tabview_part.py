@@ -43,14 +43,6 @@ class TabViewPart(ctk.CTkTabview):
 
         return get_total_results(self.unsorted_news_data)
 
-    # def on_tab_switch(self):
-    #     active_tab = self.get()
-    #     if active_tab == MONTHS_TAB_NAME:
-    #         if not self.table_part.cards_by_months and self.unsorted_news_data:
-    #             self.table_part.fill_table()
-    #     if active_tab == PERIOD_TAB_NAME:
-    #         pass
-
     def output_data(self) -> dict:
         active_tab = self.get()
         if active_tab == MONTHS_TAB_NAME:

@@ -1,6 +1,8 @@
 import customtkinter as ctk
+from src.config.exceptions import *
 from src.config.gui_config import *
 
+from datetime import datetime
 
 from src.gui.basic.button import CustomButton
 from src.gui.basic.date_entry import CustomDateEntry
@@ -22,16 +24,23 @@ class PeriodChoicePart(ctk.CTkFrame):
         self.rowconfigure((0, 1, 2, 3), weight=1, uniform="f")
 
         # ctk variables
-        earlier = ctk.StringVar()
-        later = ctk.StringVar()
+        self.earlier = ctk.StringVar()
+        self.later = ctk.StringVar()
 
         # widgets
-        self.earlier_dateEntry = CustomDateEntry(self, variable=earlier)
-        self.later_dateEntry = CustomDateEntry(self, variable=later)
+        self.earlier_dateEntry = CustomDateEntry(self, variable=self.earlier)
+        self.later_dateEntry = CustomDateEntry(self, variable=self.later)
+
+        # events
+        self.earlier_dateEntry.entry.bind("<<DateEntrySelected>>", self.validate_dates)
+        self.later_dateEntry.entry.bind("<<DateEntrySelected>>", self.validate_dates)
 
         # labels
-        self.header_lbl = MessageLbl(
-            self, lbl_text=TAB_PERIOD_HEADING_TEXT, variable=None, font_size=21
+        self.query_btn = CustomButton(
+            self,
+            btn_text=PERIOD_TAB_QUERY_BTN_TEXT,
+            btn_command=self.get_news_for_period,
+            state="disabled",
         )
         self.earlier_txt_lbl = SmallerLbl(
             self, lbl_text=EARLIER_DATE_LBL, variable=None, font_size=20
@@ -39,24 +48,49 @@ class PeriodChoicePart(ctk.CTkFrame):
         self.later_txt_lbl = SmallerLbl(
             self, lbl_text=LATER_DATE_LBL, variable=None, font_size=20
         )
-        self.query_btn = CustomButton(
-            self,
-            btn_text=PERIOD_TAB_QUERY_BTN_TEXT,
-            btn_command=self.get_news_for_period,
-            state="disabled",
-        )
+        self.inner_message_lbl = MessageLbl(self, default_text="", font_size=22)
 
         # placing
-        self.header_lbl.grid(column=0, row=0, columnspan=2, sticky="nsew")
+        self.query_btn.grid(column=0, columnspan=2, row=0, sticky="ew", padx=10, pady=5)
+
         self.earlier_txt_lbl.grid(column=0, row=1, sticky="e")
         self.earlier_dateEntry.grid(column=1, row=1, sticky="w", padx=30)
+
         self.later_txt_lbl.grid(column=0, row=2, sticky="e")
         self.later_dateEntry.grid(column=1, row=2, sticky="w", padx=30)
-        self.query_btn.grid(column=0, columnspan=2, row=3, sticky="ew", padx=10, pady=5)
+
+        self.inner_message_lbl.grid(column=0, columnspan=2, row=3, sticky="nsew")
+
         self.pack(expand=True, fill="both")
 
     def enable_query_btn(self):
-        self.query_btn.configure(state="normal")
+        if len(self.unsorted_data) > 0:
+            self.query_btn.configure(state="normal")
+
+    def disable_query_btn(self):
+        self.query_btn.configure(state="disabled")
 
     def get_news_for_period(self):
         pass
+
+    def validate_dates(self, _):
+        earlier_date = self.earlier_dateEntry.entry.get_date()
+        later_date = self.later_dateEntry.entry.get_date()
+        if (earlier_date > later_date) or (later_date < earlier_date):
+            self.color_border_red()
+            self.disable_query_btn()
+            self.inner_message_lbl.set_text(PERIOD_TAB_INCORRECT_DATES, WARNING)
+            return
+        else:
+            self.delete_border()
+            self.enable_query_btn()
+            self.inner_message_lbl.set_text(" ", INFO)
+            return
+
+    def color_border_red(self):
+        self.earlier_dateEntry.configure(fg_color=WARNING_COLOR)
+        self.later_dateEntry.configure(fg_color=WARNING_COLOR)
+
+    def delete_border(self):
+        self.earlier_dateEntry.configure(fg_color="transparent")
+        self.later_dateEntry.configure(fg_color="transparent")

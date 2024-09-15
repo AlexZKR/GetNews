@@ -8,6 +8,7 @@ SAVE_PATH_NOT_CHOSEN = "Путь для сохранения не выбран"
 SAVE_PATH_DOES_NOT_EXIST = "Путь для сохранения не существует!"
 NO_INTERNET_CONNECTION = "Нет подключения к Интернету!"
 NO_MONTHS_CHOSEN = "Выберите месяцы!"
+PERIOD_TAB_INCORRECT_DATES = "Даты выставлены неверно!"
 
 # SUCCESS_messages
 SUCCESS_MESSAGE = "Готово!"

@@ -28,8 +28,6 @@ def resource_path(relative_path):
 
 class App(ctk.CTk):
     def __init__(self):
-
-        # window setup
         super().__init__(fg_color=GREEN)
         self.configure_window()
 
@@ -48,10 +46,10 @@ class App(ctk.CTk):
         self.noteBook = TabViewPart(self)
         self.save_path_part = SavePathPart(self, self.on_save)
 
+        # window widgets layout
         self.upper_info_part.grid(column=0, row=0, sticky="nsew", padx=20, pady=10)
         self.noteBook.grid(column=0, row=1, sticky="nsew")
         self.save_path_part.grid(column=0, row=2, sticky="ew", padx=15, pady=10)
-        # window widgets layout
 
         self.mainloop()
 
@@ -87,7 +85,7 @@ class App(ctk.CTk):
             self.save_path_part.has_data = True
         except Exception as e:
             if isinstance(e, NoInternetException):
-                self.upper_info_part.set_message_lbl_text(
+                self.upper_info_part.message_lbl.set_text(
                     NO_INTERNET_CONNECTION, WARNING
                 )
             else:
@@ -101,22 +99,22 @@ class App(ctk.CTk):
                 self.save_path_part.save_path.get(),
                 self.save_path_part.add_save_folder.get(),
             )
-            self.upper_info_part.set_message_lbl_text(SUCCESS_MESSAGE, mode=SUCCESS)
+            self.upper_info_part.message_lbl.set_text(SUCCESS_MESSAGE, mode=SUCCESS)
         except Exception as e:
             if isinstance(e, SavePathDoesNotExistException):
-                self.upper_info_part.set_message_lbl_text(
+                self.upper_info_part.message_lbl.set_text(
                     text=SAVE_PATH_DOES_NOT_EXIST, mode=WARNING
                 )
                 self.save_path_part.control_save_btn()
                 return
             if isinstance(e, NoMonthsChosenException):
-                self.upper_info_part.set_message_lbl_text(
+                self.upper_info_part.message_lbl.set_text(
                     text=NO_MONTHS_CHOSEN, mode=WARNING
                 )
                 self.save_path_part.control_save_btn()
                 return
             else:
-                self.upper_info_part.set_message_lbl_text(e, mode=WARNING)
+                self.upper_info_part.message_lbl.set_text(e, mode=WARNING)
                 raise (e)
 
 

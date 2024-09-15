@@ -9,7 +9,10 @@ class SavePathDoesNotExistException(Exception):
 
     pass
 
+
 class NoMonthsChosenException(Exception):
     """Thrown when saving initialized but no months were chosen in the table"""
 
     pass
+
+
