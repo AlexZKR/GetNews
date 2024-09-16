@@ -1,9 +1,11 @@
+import datetime
 import customtkinter as ctk
+from datetime import datetime as dt, timezone
+
 from src.config.exceptions import *
 from src.config.gui_config import *
 
-from datetime import datetime
-
+from src.get_data.parse_json import get_total_results
 from src.gui.basic.button import CustomButton
 from src.gui.basic.date_entry import CustomDateEntry
 from src.gui.basic.message_label import MessageLbl
@@ -11,12 +13,12 @@ from src.gui.basic.smaller_lbl import SmallerLbl
 
 
 class PeriodChoicePart(ctk.CTkFrame):
-    def __init__(self, parent, unsorted_data):
+    def __init__(self, parent, unsorted_data: list):
         super().__init__(master=parent, fg_color=DARK_GREEN)
 
         # data
-        self.unsorted_data = unsorted_data
-
+        self.unstruct_data = unsorted_data
+        self.period_data = []
         # layout
         self.columnconfigure(0, weight=1, uniform="f")
         self.columnconfigure(1, weight=2, uniform="f")
@@ -64,14 +66,40 @@ class PeriodChoicePart(ctk.CTkFrame):
         self.pack(expand=True, fill="both")
 
     def enable_query_btn(self):
-        if len(self.unsorted_data) > 0:
+        if len(self.unstruct_data) > 0:
             self.query_btn.configure(state="normal")
 
     def disable_query_btn(self):
         self.query_btn.configure(state="disabled")
 
     def get_news_for_period(self):
-        pass
+        earlier_date = self.earlier_dateEntry.entry.get_date()
+        later_date = self.later_dateEntry.entry.get_date()
+
+        earlier_index = self.get_first_index_by_date(later_date, self.unstruct_data)
+        later_index = self.get_last_index_by_date(earlier_date, self.unstruct_data)
+        self.period_data = self.unstruct_data[earlier_index : later_index + 1]
+        self.inner_message_lbl.set_text(
+            text=get_total_results(self.period_data), mode=INFO
+        )
+
+    def get_first_index_by_date(self, date, list_of_dicts: list):
+        for dict in list_of_dicts:
+            if datetime.date.fromtimestamp(dict["Timestamp"]) == date:
+                return list_of_dicts.index(dict)
+        return -1
+
+    def get_last_index_by_date(self, date, list_of_dicts: list):
+        for index, dict in enumerate(list_of_dicts):
+            if datetime.date.fromtimestamp(dict["Timestamp"]) == date:
+                if index + 1 > len(list_of_dicts):
+                    return index  # this is the last dict of the list
+                if (
+                    datetime.date.fromtimestamp(list_of_dicts[index + 1]["Timestamp"])
+                    != date
+                ):
+                    return index  # the next dict is of the next date, meaning this is the last news of the day
+        return -1
 
     def validate_dates(self, _):
         earlier_date = self.earlier_dateEntry.entry.get_date()
