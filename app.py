@@ -81,7 +81,7 @@ class App(ctk.CTk):
     def on_get(self):
         try:
             result_message = self.noteBook.get_data()
-            self.upper_info_part.message_txt.set(result_message)
+            self.upper_info_part.message_lbl.set_text(text=result_message, mode=INFO)
             self.save_path_part.has_data = True
         except Exception as e:
             if isinstance(e, NoInternetException):

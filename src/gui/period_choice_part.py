@@ -50,7 +50,9 @@ class PeriodChoicePart(ctk.CTkFrame):
         self.later_txt_lbl = SmallerLbl(
             self, lbl_text=LATER_DATE_LBL, variable=None, font_size=20
         )
-        self.inner_message_lbl = MessageLbl(self, default_text="", font_size=22)
+        self.inner_message_lbl = MessageLbl(
+            self, default_text=PERIOD_MESSAGE_LBL_DEFAULT_TEXT, font_size=22
+        )
 
         # placing
         self.query_btn.grid(column=0, columnspan=2, row=0, sticky="ew", padx=10, pady=5)
@@ -84,12 +86,29 @@ class PeriodChoicePart(ctk.CTkFrame):
         )
 
     def get_first_index_by_date(self, date, list_of_dicts: list):
+        # if selected date (validation occured earlier) is later than
+        # the latest news date than return the latest news index
+        # i.e. selected date is 18.09 (which is valid date)
+        # but the latest news are 17.09, so the latest news is returned
+        if datetime.date.fromtimestamp(list_of_dicts[0]["Timestamp"]) < date:
+            return 0  # index of the first news
         for dict in list_of_dicts:
-            if datetime.date.fromtimestamp(dict["Timestamp"]) == date:
+            news_d = datetime.date.fromtimestamp(dict["Timestamp"])
+            if news_d == date:
                 return list_of_dicts.index(dict)
         return -1
 
     def get_last_index_by_date(self, date, list_of_dicts: list):
+        # if selected date (validation occured earlier) is earlier than
+        # the earliest news date than return the earlies news index
+        # i.e. selected date is 01.09 (which is valid date)
+        # but the earliest news are 02.09, so the news from 02.09 are returned
+        if (
+            datetime.date.fromtimestamp(list_of_dicts[len(list_of_dicts)-1]["Timestamp"])
+            > date
+        ):
+            return len(list_of_dicts)  # index of the first news
+
         for index, dict in enumerate(list_of_dicts):
             if datetime.date.fromtimestamp(dict["Timestamp"]) == date:
                 if index + 1 > len(list_of_dicts):

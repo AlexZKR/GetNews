@@ -14,18 +14,21 @@ PERIOD_TAB_INCORRECT_DATES = "Даты выставлены неверно!"
 SUCCESS_MESSAGE = "Готово!"
 
 # widget_text
+MAIN_MESSAGE_LBL_DEFAULT_TEXT = ". . ."
 GENERAL_QUERY_BTN_TEXT = "Получить новости из Интернета"
-MESSAGE_LBL_DEFAULT_TEXT = ". . ."
+PERIOD_MESSAGE_LBL_DEFAULT_TEXT = "Получите новости за период"
+
 ADD_FOLDER_CHECBOX_TEXT = "Отдельная папка"
 SAVE_PATH_BTN_TEXT = "Путь для сохранения"
 SAVE_RESULTS_BTN_TEXT = "Сохранить выбранные новости"
+
 
 # Tabs titles
 MONTHS_TAB_NAME = "Месяцы"
 PERIOD_TAB_NAME = "За период"
 
 # Months tab text
-TABLE_FILL_BTN_TEXT = "Заполнить таблицу"
+TABLE_FILL_BTN_TEXT = "Получить все новости по месяцам"
 
 # Period tab text
 TAB_PERIOD_HEADING_TEXT = "Выгрузка новостей за указанный период"
