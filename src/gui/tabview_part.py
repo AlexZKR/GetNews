@@ -3,7 +3,6 @@ import customtkinter as ctk
 from src.config.exceptions import *
 from src.config.gui_config import *
 from src.get_data.parse_json import (
-    get_total_results,
     parseRawData,
 )
 from src.gui.period_choice_part import PeriodChoicePart
@@ -41,7 +40,7 @@ class TabViewPart(ctk.CTkTabview):
         self.table_part.enable_sort_btn()
         self.period_choice_part.enable_query_btn()
 
-        return get_total_results(self.unsorted_news_data)
+        return len(self.unsorted_news_data)
 
     def output_data(self) -> dict:
         active_tab = self.get()

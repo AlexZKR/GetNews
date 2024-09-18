@@ -9,9 +9,11 @@ SAVE_PATH_DOES_NOT_EXIST = "Путь для сохранения не сущес
 NO_INTERNET_CONNECTION = "Нет подключения к Интернету!"
 NO_MONTHS_CHOSEN = "Выберите месяцы!"
 PERIOD_TAB_INCORRECT_DATES = "Даты выставлены неверно!"
+PERIOD_TAB_NO_NEWS_FOR_PERIOD = "Нет новостей за указанный период!"
 
-# SUCCESS_messages
-SUCCESS_MESSAGE = "Готово!"
+# MAIN_LBL_MSG
+MAIN_LBL_SUCCESS_MESSAGE = "Готово!"
+MAIN_LBL_RESULT_MESSAGE = " новостей получено из Интернета"
 
 # widget_text
 MAIN_MESSAGE_LBL_DEFAULT_TEXT = ". . ."
@@ -35,6 +37,7 @@ TAB_PERIOD_HEADING_TEXT = "Выгрузка новостей за указанн
 EARLIER_DATE_LBL = "От:"
 LATER_DATE_LBL = "До:"
 PERIOD_TAB_QUERY_BTN_TEXT = "Получить новости за период"
+PERIOD_TAB_INNER_MSG_RESULT = " новостей получено за период\n"
 
 # text_sizes
 FONT = "Calibri"

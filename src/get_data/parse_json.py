@@ -29,14 +29,6 @@ def parseRawData(raw_dicts=None):
     return parsed_dicts
 
 
-def get_total_results(data: list):
-    total_results = len(data)
-    if total_results <= 0:
-        return f"Получено {total_results} новостных карточек. Что-то пошло не так"
-    else:
-        return f"Получено {total_results} новостных карточек"
-
-
 def sort_by_month(raw_data):
     result = {}
     for item in raw_data:

@@ -5,7 +5,6 @@ from datetime import datetime as dt, timezone
 from src.config.exceptions import *
 from src.config.gui_config import *
 
-from src.get_data.parse_json import get_total_results
 from src.gui.basic.button import CustomButton
 from src.gui.basic.date_entry import CustomDateEntry
 from src.gui.basic.message_label import MessageLbl
@@ -81,9 +80,19 @@ class PeriodChoicePart(ctk.CTkFrame):
         earlier_index = self.get_first_index_by_date(later_date, self.unstruct_data)
         later_index = self.get_last_index_by_date(earlier_date, self.unstruct_data)
         self.period_data = self.unstruct_data[earlier_index : later_index + 1]
-        self.inner_message_lbl.set_text(
-            text=get_total_results(self.period_data), mode=INFO
-        )
+        text = self.get_result_msg()
+        self.inner_message_lbl.set_text(text=text, mode=INFO)
+
+    def get_result_msg(self):
+        if len(self.period_data) <= 0:
+            return PERIOD_TAB_NO_NEWS_FOR_PERIOD
+        to_date = datetime.date.fromtimestamp(
+            self.period_data[0]["Timestamp"]
+        ).strftime("%d.%m.%Y")
+        from_date = datetime.date.fromtimestamp(
+            self.period_data[len(self.period_data) - 1]["Timestamp"]
+        ).strftime("%d.%m.%Y")
+        return f"{len(self.period_data)}{PERIOD_TAB_INNER_MSG_RESULT} с {from_date} по {to_date}"
 
     def get_first_index_by_date(self, date, list_of_dicts: list):
         # if selected date (validation occured earlier) is later than
@@ -104,7 +113,9 @@ class PeriodChoicePart(ctk.CTkFrame):
         # i.e. selected date is 01.09 (which is valid date)
         # but the earliest news are 02.09, so the news from 02.09 are returned
         if (
-            datetime.date.fromtimestamp(list_of_dicts[len(list_of_dicts)-1]["Timestamp"])
+            datetime.date.fromtimestamp(
+                list_of_dicts[len(list_of_dicts) - 1]["Timestamp"]
+            )
             > date
         ):
             return len(list_of_dicts)  # index of the first news
@@ -131,7 +142,7 @@ class PeriodChoicePart(ctk.CTkFrame):
         else:
             self.delete_border()
             self.enable_query_btn()
-            self.inner_message_lbl.set_text(" ", INFO)
+            # self.inner_message_lbl.set_text(" ", INFO)
             return
 
     def color_border_red(self):

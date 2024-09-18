@@ -80,8 +80,9 @@ class App(ctk.CTk):
 
     def on_get(self):
         try:
-            result_message = self.noteBook.get_data()
-            self.upper_info_part.message_lbl.set_text(text=result_message, mode=INFO)
+            news_count = self.noteBook.get_data()
+            result_text = f"{news_count}{MAIN_LBL_RESULT_MESSAGE}"
+            self.upper_info_part.message_lbl.set_text(text=result_text, mode=INFO)
             self.save_path_part.has_data = True
         except Exception as e:
             if isinstance(e, NoInternetException):
@@ -99,7 +100,9 @@ class App(ctk.CTk):
                 self.save_path_part.save_path.get(),
                 self.save_path_part.add_save_folder.get(),
             )
-            self.upper_info_part.message_lbl.set_text(SUCCESS_MESSAGE, mode=SUCCESS)
+            self.upper_info_part.message_lbl.set_text(
+                MAIN_LBL_SUCCESS_MESSAGE, mode=SUCCESS
+            )
         except Exception as e:
             if isinstance(e, SavePathDoesNotExistException):
                 self.upper_info_part.message_lbl.set_text(
