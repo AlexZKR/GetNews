@@ -1,9 +1,8 @@
-import datetime
 import customtkinter as ctk
-from datetime import datetime as dt, timezone
 
 from src.config.exceptions import *
 from src.config.gui_config import *
+from src.get_data.data_conversion import *
 
 from src.gui.basic.button import CustomButton
 from src.gui.basic.date_entry import CustomDateEntry
@@ -67,22 +66,13 @@ class PeriodChoicePart(ctk.CTkFrame):
 
         self.pack(expand=True, fill="both")
 
-    def enable_query_btn(self):
-        if len(self.unstruct_data) > 0:
-            self.query_btn.configure(state="normal")
-
-    def disable_query_btn(self):
-        self.query_btn.configure(state="disabled")
-
     def output(self) -> tuple:
         if len(self.period_data) == 0:
             raise NoPeriodChosenException
-        from_date = datetime.date.fromtimestamp(
-            self.period_data[0]["Timestamp"]
-        ).strftime("%d.%m.%Y")
-        to_date = datetime.date.fromtimestamp(
+        from_date = get_full_date_str(self.period_data[0]["Timestamp"])
+        to_date = get_full_date_str(
             self.period_data[len(self.period_data) - 1]["Timestamp"]
-        ).strftime("%d.%m.%Y")
+        )
         if to_date != from_date:
             return (
                 f"{to_date} - {from_date}",
@@ -104,12 +94,10 @@ class PeriodChoicePart(ctk.CTkFrame):
     def get_result_msg(self):
         if len(self.period_data) <= 0:
             return PERIOD_TAB_NO_NEWS_FOR_PERIOD
-        to_date = datetime.date.fromtimestamp(
-            self.period_data[0]["Timestamp"]
-        ).strftime("%d.%m.%Y")
-        from_date = datetime.date.fromtimestamp(
+        to_date = get_full_date_str(self.period_data[0]["Timestamp"])
+        from_date = get_full_date_str(
             self.period_data[len(self.period_data) - 1]["Timestamp"]
-        ).strftime("%d.%m.%Y")
+        )
         if from_date != to_date:
             return f"{len(self.period_data)}{PERIOD_TAB_INNER_MSG_RESULT} период с {from_date} по {to_date}"
         else:
@@ -122,10 +110,10 @@ class PeriodChoicePart(ctk.CTkFrame):
         # the latest news date than return the latest news index
         # i.e. selected date is 18.09 (which is valid date)
         # but the latest news are 17.09, so the latest news is returned
-        if datetime.date.fromtimestamp(list_of_dicts[0]["Timestamp"]) < date:
+        if get_date_obj(list_of_dicts[0]["Timestamp"]) < date:
             return 0  # index of the first news
         for dict in list_of_dicts:
-            news_d = datetime.date.fromtimestamp(dict["Timestamp"])
+            news_d = get_date_obj(dict["Timestamp"])
             if news_d == date:
                 return list_of_dicts.index(dict)
         return -1
@@ -135,22 +123,14 @@ class PeriodChoicePart(ctk.CTkFrame):
         # the earliest news date than return the earlies news index
         # i.e. selected date is 01.09 (which is valid date)
         # but the earliest news are 02.09, so the news from 02.09 are returned
-        if (
-            datetime.date.fromtimestamp(
-                list_of_dicts[len(list_of_dicts) - 1]["Timestamp"]
-            )
-            > date
-        ):
+        if get_date_obj(list_of_dicts[len(list_of_dicts) - 1]["Timestamp"]) > date:
             return len(list_of_dicts)  # index of the first news
 
         for index, dict in enumerate(list_of_dicts):
-            if datetime.date.fromtimestamp(dict["Timestamp"]) == date:
+            if get_date_obj(dict["Timestamp"]) == date:
                 if index + 1 > len(list_of_dicts):
                     return index  # this is the last dict of the list
-                if (
-                    datetime.date.fromtimestamp(list_of_dicts[index + 1]["Timestamp"])
-                    != date
-                ):
+                if get_date_obj(list_of_dicts[index + 1]["Timestamp"]) != date:
                     return index  # the next dict is of the next date, meaning this is the last news of the day
         return -1
 
@@ -165,7 +145,6 @@ class PeriodChoicePart(ctk.CTkFrame):
         else:
             self.delete_border()
             self.enable_query_btn()
-            # self.inner_message_lbl.set_text(" ", INFO)
             return
 
     def color_border_red(self):
@@ -175,3 +154,10 @@ class PeriodChoicePart(ctk.CTkFrame):
     def delete_border(self):
         self.earlier_dateEntry.configure(fg_color="transparent")
         self.later_dateEntry.configure(fg_color="transparent")
+
+    def enable_query_btn(self):
+        if len(self.unstruct_data) > 0:
+            self.query_btn.configure(state="normal")
+
+    def disable_query_btn(self):
+        self.query_btn.configure(state="disabled")

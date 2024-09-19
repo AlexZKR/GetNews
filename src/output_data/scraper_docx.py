@@ -1,6 +1,3 @@
-from datetime import datetime as dt
-import locale
-
 from docx import Document as word_doc
 from docx.shared import Pt, Cm
 from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_LINE_SPACING

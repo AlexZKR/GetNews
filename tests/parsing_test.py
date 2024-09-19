@@ -2,7 +2,7 @@ import datetime as dt
 import pytest
 
 from src.get_data.parse_json import parseRawData
-from src.get_data.parse_json import get_russian_txt_date
+from src.get_data.parse_json import get_cased_rus_txt_date
 from src.get_data.parse_json import sort_by_month
 
 
@@ -14,7 +14,7 @@ from src.get_data.parse_json import sort_by_month
     ],
 )
 def test_bring_date_to_case(input, expected):
-    tmp = get_russian_txt_date(input)
+    tmp = get_cased_rus_txt_date(input)
     assert tmp == expected
 
 

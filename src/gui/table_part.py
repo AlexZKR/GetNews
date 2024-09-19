@@ -2,7 +2,8 @@ import customtkinter as ctk
 from src.config.exceptions import NoMonthsChosenException
 from src.config.gui_config import *
 
-from src.get_data.parse_json import get_mon_ru_str, sort_by_month
+from src.get_data.parse_json import sort_by_month
+from src.get_data.data_conversion import get_mon_ru_str
 from src.gui.basic.button import CustomButton
 
 
