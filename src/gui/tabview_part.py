@@ -18,6 +18,7 @@ class TabViewPart(ctk.CTkTabview):
         # tabs
         self.period_tab = self.add(PERIOD_TAB_NAME)
         self.months_tab = self.add(MONTHS_TAB_NAME)
+        self.curr_tab = ""
 
         # data
         self.unsorted_news_data = []
@@ -42,9 +43,11 @@ class TabViewPart(ctk.CTkTabview):
 
         return len(self.unsorted_news_data)
 
-    def output_data(self) -> dict:
+    def output_data(self):
         active_tab = self.get()
         if active_tab == MONTHS_TAB_NAME:
-            return self.table_part.output()
+            self.curr_tab = MONTHS_TAB_NAME
+            return self.table_part.output() # dict
         if active_tab == PERIOD_TAB_NAME:
-            self.output_period()
+            self.curr_tab = PERIOD_TAB_NAME
+            return self.period_choice_part.output() #tuple

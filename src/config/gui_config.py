@@ -8,6 +8,7 @@ SAVE_PATH_NOT_CHOSEN = "Путь для сохранения не выбран"
 SAVE_PATH_DOES_NOT_EXIST = "Путь для сохранения не существует!"
 NO_INTERNET_CONNECTION = "Нет подключения к Интернету!"
 NO_MONTHS_CHOSEN = "Выберите месяцы!"
+NO_PERIOD_CHOSEN = "Получите новости за период!"
 PERIOD_TAB_INCORRECT_DATES = "Даты выставлены неверно!"
 PERIOD_TAB_NO_NEWS_FOR_PERIOD = "Нет новостей за указанный период!"
 
@@ -37,7 +38,7 @@ TAB_PERIOD_HEADING_TEXT = "Выгрузка новостей за указанн
 EARLIER_DATE_LBL = "От:"
 LATER_DATE_LBL = "До:"
 PERIOD_TAB_QUERY_BTN_TEXT = "Получить новости за период"
-PERIOD_TAB_INNER_MSG_RESULT = " новостей получено за период\n"
+PERIOD_TAB_INNER_MSG_RESULT = " новостей получено за \n"
 
 # text_sizes
 FONT = "Calibri"

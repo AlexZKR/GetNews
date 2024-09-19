@@ -8,7 +8,7 @@ from src.gui.upper_info_part import UpperInfoPart
 from src.gui.tabview_part import TabViewPart
 from src.gui.save_path_part import SavePathPart
 
-from src.output_data.scraper_output import output_results
+from src.output_data.scraper_output import output_by_months, output_by_period
 
 
 try:
@@ -95,11 +95,19 @@ class App(ctk.CTk):
     def on_save(self):
         try:
             to_output = self.noteBook.output_data()
-            output_results(
-                to_output,
-                self.save_path_part.save_path.get(),
-                self.save_path_part.add_save_folder.get(),
-            )
+            curr_tab = self.noteBook.curr_tab
+            if curr_tab == MONTHS_TAB_NAME:
+                output_by_months(
+                    to_output,
+                    self.save_path_part.save_path.get(),
+                    self.save_path_part.add_save_folder.get(),
+                )
+            if curr_tab == PERIOD_TAB_NAME:
+                output_by_period(
+                    to_output,
+                    self.save_path_part.save_path.get(),
+                    self.save_path_part.add_save_folder.get(),
+                )
             self.upper_info_part.message_lbl.set_text(
                 MAIN_LBL_SUCCESS_MESSAGE, mode=SUCCESS
             )
@@ -113,6 +121,12 @@ class App(ctk.CTk):
             if isinstance(e, NoMonthsChosenException):
                 self.upper_info_part.message_lbl.set_text(
                     text=NO_MONTHS_CHOSEN, mode=WARNING
+                )
+                self.save_path_part.control_save_btn()
+                return
+            if isinstance(e, NoPeriodChosenException):
+                self.upper_info_part.message_lbl.set_text(
+                    text=NO_PERIOD_CHOSEN, mode=WARNING
                 )
                 self.save_path_part.control_save_btn()
                 return

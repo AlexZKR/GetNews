@@ -18,6 +18,7 @@ class PeriodChoicePart(ctk.CTkFrame):
         # data
         self.unstruct_data = unsorted_data
         self.period_data = []
+
         # layout
         self.columnconfigure(0, weight=1, uniform="f")
         self.columnconfigure(1, weight=2, uniform="f")
@@ -73,6 +74,23 @@ class PeriodChoicePart(ctk.CTkFrame):
     def disable_query_btn(self):
         self.query_btn.configure(state="disabled")
 
+    def output(self) -> tuple:
+        if len(self.period_data) == 0:
+            raise NoPeriodChosenException
+        from_date = datetime.date.fromtimestamp(
+            self.period_data[0]["Timestamp"]
+        ).strftime("%d.%m.%Y")
+        to_date = datetime.date.fromtimestamp(
+            self.period_data[len(self.period_data) - 1]["Timestamp"]
+        ).strftime("%d.%m.%Y")
+        if to_date != from_date:
+            return (
+                f"{to_date} - {from_date}",
+                self.period_data,
+            )  # if period was chosen
+        else:
+            return (f"{to_date}", self.period_data)  # if one day was chosen
+
     def get_news_for_period(self):
         earlier_date = self.earlier_dateEntry.entry.get_date()
         later_date = self.later_dateEntry.entry.get_date()
@@ -92,7 +110,12 @@ class PeriodChoicePart(ctk.CTkFrame):
         from_date = datetime.date.fromtimestamp(
             self.period_data[len(self.period_data) - 1]["Timestamp"]
         ).strftime("%d.%m.%Y")
-        return f"{len(self.period_data)}{PERIOD_TAB_INNER_MSG_RESULT} с {from_date} по {to_date}"
+        if from_date != to_date:
+            return f"{len(self.period_data)}{PERIOD_TAB_INNER_MSG_RESULT} период с {from_date} по {to_date}"
+        else:
+            return (
+                f"{len(self.period_data)}{PERIOD_TAB_INNER_MSG_RESULT} за {from_date}"
+            )
 
     def get_first_index_by_date(self, date, list_of_dicts: list):
         # if selected date (validation occured earlier) is later than

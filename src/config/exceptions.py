@@ -16,3 +16,7 @@ class NoMonthsChosenException(Exception):
     pass
 
 
+class NoPeriodChosenException(Exception):
+    """Thrown when user did not query news for period in Period Tab"""
+
+    pass

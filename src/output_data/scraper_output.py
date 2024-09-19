@@ -13,7 +13,13 @@ def check_save_loc(save_location: str, add_folder: bool):
     final_save_path = save_location
     if add_folder == True:
         final_save_path = f"{save_location}/Results {dt_now}"
-        os.makedirs(final_save_path)
+        try:
+            os.makedirs(final_save_path)
+        except Exception as e:
+            if isinstance(e, FileExistsError):
+                pass
+            else:
+                raise e
     return final_save_path
 
 
@@ -27,18 +33,26 @@ def get_date_string_mon_num(timestamp):
     return dt_obj.strftime("%m.%Y").lower()
 
 
-def get_date_string_mon_name(timestamp):
+def get_date_string_mon_name(date_string):
     locale.setlocale(locale.LC_TIME, "ru")
-    dt_obj = dt.fromtimestamp(timestamp)
+    dt_obj = dt.strptime(date_string, "%m.%Y")
     return dt_obj.strftime("%B %Y").lower()
 
 
-def output_results(news_dict: dict, save_location: str, add_save_folder: bool):
+def output_by_months(news: tuple, save_location: str, add_save_folder: bool):
     """Outputs results into folder results"""
     save_location = check_save_loc(save_location, add_save_folder)
-    for key in news_dict:
-        timestamp = news_dict[key][0]["Timestamp"]
-        date_string = get_date_string_mon_name(timestamp)
+    for key in news:
+        timestamp = news[key][0]["Timestamp"]
+        header_date = get_date_string_mon_name(key)
         filename_date = get_date_string_mon_num(timestamp)
         filename = create_filename(save_location, filename_date)
-        create_doc(news_dict[key], filename, date_string)
+        create_doc(news[key], filename, header_date)
+
+
+def output_by_period(news: tuple, save_location: str, add_save_folder: bool):
+    """Outputs results into folder results"""
+    period_string = news[0]
+    save_location = check_save_loc(save_location, add_save_folder)
+    filename = create_filename(save_location, period_string)
+    create_doc(news[1], filename, period_string)
