@@ -27,7 +27,7 @@ def get_datetime_obj(timestamp):
 
 def get_mon_ru_str(string):
     locale.setlocale(locale.LC_TIME, "ru")
-    return dt.datetime.strptime(string, "%m.%Y").strftime("%B %Y")
+    return dt.datetime.strptime(string, "%m.%Y").strftime("%B %Y").lower()
 
 
 def get_cased_rus_txt_date(dt_object: dt):

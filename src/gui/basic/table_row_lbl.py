@@ -20,4 +20,5 @@ class TableRowLbl(ctk.CTkLabel):
             corner_radius=0,
             padx=pad_x,
             pady=pad_y,
+            anchor="center"
         )

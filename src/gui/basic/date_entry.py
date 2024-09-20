@@ -1,3 +1,4 @@
+import datetime
 from tkcalendar import DateEntry
 import customtkinter as ctk
 from src.config.gui_config import *
@@ -30,7 +31,10 @@ class CustomDateEntry(ctk.CTkFrame):
             font=ctk.CTkFont(family=FONT, size=font_size),
             borderwidth=0,
         )
-        
+
         self.entry.pack(
             expand=True, fill="both", padx=signal_border_width, pady=signal_border_width
         )
+
+    def get_entry_date(self) -> datetime.date:
+        return self.entry.get_date()
