@@ -119,6 +119,26 @@ def test_finish_date_index_with_earlier_date(input, expected, start_date, end_da
     [
         (
             raw_period_list_test_input,
+            7,
+            date(year=2024, month=8, day=13),
+            date(year=2024, month=8, day=16),
+        ),
+    ],
+)
+def test_finish_date_index_with_no_news_for_the_day(
+    input, expected, start_date, end_date
+):
+    """If there is no news for the day, func should return
+    index of the next news, which date is earlier"""
+    index = get_finish_index(input, start_date=start_date, end_date=end_date)
+    assert index == expected
+
+
+@pytest.mark.parametrize(
+    "input, expected, start_date, end_date",
+    [
+        (
+            raw_period_list_test_input,
             raw_period_list_test_output,
             date(year=2024, month=8, day=11),
             date(year=2024, month=8, day=15),

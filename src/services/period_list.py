@@ -27,9 +27,12 @@ def get_finish_index(news_list: list, start_date, end_date):
 
     for index, dict in enumerate(news_list):
         current_news_date = get_date_obj_ts(dict["Timestamp"])
+        next_dict = news_list[index + 1]
+        next_news_date = get_date_obj_ts(next_dict["Timestamp"])
         if current_news_date == start_date:
-            next_dict = news_list[index + 1]
-            next_news_date = get_date_obj_ts(next_dict["Timestamp"])
             if next_news_date < current_news_date:
                 return news_list.index(dict)
+        if next_news_date < start_date:
+            return news_list.index(dict)
+
     return -1
