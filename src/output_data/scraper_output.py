@@ -2,7 +2,7 @@ import os
 
 from .scraper_docx import create_doc
 from ..config.exceptions import SavePathDoesNotExistException
-from src.get_data.data_conversion import *
+from src.services.data_conversion import *
 
 
 def check_save_loc(save_location: str, add_folder: bool):

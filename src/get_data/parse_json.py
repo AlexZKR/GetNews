@@ -1,4 +1,4 @@
-from src.get_data.data_conversion import *
+from src.services.data_conversion import *
 
 from .requester import getAllJsonNewsData
 

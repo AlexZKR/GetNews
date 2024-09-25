@@ -38,7 +38,7 @@ TAB_PERIOD_HEADING_TEXT = "Выгрузка новостей за указанн
 EARLIER_DATE_LBL = "От:"
 LATER_DATE_LBL = "До:"
 PERIOD_TAB_QUERY_BTN_TEXT = "Получить новости за период"
-PERIOD_TAB_INNER_MSG_RESULT = " новостей получено за \n"
+PERIOD_TAB_INNER_MSG_RESULT = " новостей выбрано за \n"
 
 # text_sizes
 FONT = "Calibri"

@@ -37,4 +37,5 @@ class CustomDateEntry(ctk.CTkFrame):
         )
 
     def get_entry_date(self) -> datetime.date:
-        return self.entry.get_date()
+        d = self.entry.get_date()
+        return d

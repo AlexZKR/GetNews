@@ -1,3 +1,4 @@
+import datetime
 import locale
 from datetime import date
 import datetime as dt
@@ -17,8 +18,13 @@ def get_mon_date_str(timestamp):
     return dt.datetime.fromtimestamp(timestamp).strftime("%m.%Y")
 
 
-def get_date_obj(timestamp):
+def get_date_obj_ts(timestamp):
     return date.fromtimestamp(timestamp)
+
+
+def get_date_obj_str(string):
+    if string:
+        return datetime.datetime.strptime(string, "%d.%m.%Y")
 
 
 def get_datetime_obj(timestamp):

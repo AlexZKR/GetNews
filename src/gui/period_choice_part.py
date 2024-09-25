@@ -2,12 +2,13 @@ import customtkinter as ctk
 
 from src.config.exceptions import *
 from src.config.gui_config import *
-from src.get_data.data_conversion import *
+from src.services.data_conversion import *
 
 from src.gui.basic.button import CustomButton
 from src.gui.basic.date_entry import CustomDateEntry
 from src.gui.basic.message_label import MessageLbl
 from src.gui.basic.smaller_lbl import SmallerLbl
+from src.services.period_list import get_period_list
 
 
 class PeriodChoicePart(ctk.CTkFrame):
@@ -24,21 +25,17 @@ class PeriodChoicePart(ctk.CTkFrame):
 
         self.rowconfigure((0, 1, 2, 3), weight=1, uniform="f")
 
-        # ctk variables
-        self.earlier = ctk.StringVar()
-        self.later = ctk.StringVar()
-
         # widgets
-        self.earlier_dateEntry = CustomDateEntry(self, variable=self.earlier)
-        self.later_dateEntry = CustomDateEntry(self, variable=self.later)
+        self.earlier_dateEntry = CustomDateEntry(self)
+        self.later_dateEntry = CustomDateEntry(self)
 
         # events
         self.earlier_dateEntry.entry.bind("<<DateEntrySelected>>", self.validate_dates)
         self.later_dateEntry.entry.bind("<<DateEntrySelected>>", self.validate_dates)
 
         # properties
-        self.early_ent_date = self.earlier_dateEntry.get_entry_date()
-        self.later_ent_date = self.later_dateEntry.get_entry_date()
+        self.early_ent_date = self.earlier_dateEntry.entry.get_date
+        self.later_ent_date = self.later_dateEntry.entry.get_date
 
         # labels
         self.query_btn = CustomButton(
@@ -76,24 +73,26 @@ class PeriodChoicePart(ctk.CTkFrame):
         dates = self.get_list_outer_dates()
         if dates[0] != dates[1]:
             return (
-                f"{dates[0]} - {dates[1]}",
+                f"{dates[1]} - {dates[0]}",
                 self.period_data,
             )  # if period was chosen
         else:
             return (f"{dates[0]}", self.period_data)  # if one day was chosen
 
     def get_news_for_period(self):
-        self.period_data = self.unstruct_data[
-            self.get_start_index() : self.get_finish_index() + 1
-        ]
+        self.period_data = get_period_list(
+            news_list=self.unstruct_data,
+            start_date=self.early_ent_date(),
+            end_date=self.later_ent_date(),
+        )
         self.inner_message_lbl.set_text(text=self.get_result_msg(), mode=INFO)
 
     def get_result_msg(self):
         if len(self.period_data) <= 0:
             return PERIOD_TAB_NO_NEWS_FOR_PERIOD
         dates = self.get_list_outer_dates()
-        if dates[0] != dates[1]:
-            return f"{len(self.period_data)}{PERIOD_TAB_INNER_MSG_RESULT} период с {dates[0]} по {dates[1]}"
+        if dates[1] != dates[0]:
+            return f"{len(self.period_data)}{PERIOD_TAB_INNER_MSG_RESULT} период с {dates[1]} по {dates[0]}"
         else:
             return f"{len(self.period_data)}{PERIOD_TAB_INNER_MSG_RESULT} за {dates[0]}"
 
@@ -104,44 +103,9 @@ class PeriodChoicePart(ctk.CTkFrame):
         )
         return (to_date, from_date)
 
-    def get_start_index(self):
-        # if selected date (validation occured earlier) is later than
-        # the latest news date than return the latest news index
-        # i.e. selected date is 18.09 (which is valid date)
-        # but the latest news are 17.09, so the latest news is returned
-        if get_date_obj(self.unstruct_data[0]["Timestamp"]) < self.early_ent_date:
-            return 0  # index of the first news
-        for dict in self.unstruct_data:
-            news_d = get_date_obj(dict["Timestamp"])
-            if news_d == self.early_ent_date:
-                return self.unstruct_data.index(dict)
-        return -1
-
-    def get_finish_index(self):
-        # if selected date (validation occured earlier) is earlier than
-        # the earliest news date than return the earlies news index
-        # i.e. selected date is 01.09 (which is valid date)
-        # but the earliest news are 02.09, so the news from 02.09 are returned
-        if (
-            get_date_obj(self.unstruct_data[len(self.unstruct_data) - 1]["Timestamp"])
-            > self.later_ent_date
-        ):
-            return len(self.unstruct_data)  # index of the first news
-
-        for index, dict in enumerate(self.unstruct_data):
-            if get_date_obj(dict["Timestamp"]) == self.later_ent_date:
-                if index + 1 > len(self.unstruct_data):
-                    return index  # this is the last dict of the list
-                if (
-                    get_date_obj(self.unstruct_data[index + 1]["Timestamp"])
-                    != self.later_ent_date
-                ):
-                    return index  # the next dict is of the next date, meaning this is the last news of the day
-        return -1
-
-    def validate_dates(self, _):
-        if (self.early_ent_date > self.later_ent_date) or (
-            self.later_ent_date < self.early_ent_date
+    def validate_dates(self, event):
+        if (self.early_ent_date() > self.later_ent_date()) or (
+            self.later_ent_date() < self.early_ent_date()
         ):
             self.color_border_red()
             self.disable_query_btn()
